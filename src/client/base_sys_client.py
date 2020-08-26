@@ -59,7 +59,7 @@ def connect_ble_server():
     
     is_Valid = True
     while is_Valid != False:
-        ble_addr_input = input('Gõ địa chỉ BLE máy chủ:')
+        ble_addr_input = input('Gõ địa chỉ BLE máy chủ: ')
 
         if len(ble_addr_input) == 17:
             print('Chuẩn bị kết nối đến BLE server...')
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     choice = ''
     message_for_welcome()
 
-    while choice != 'q':    
+    while choice != ':q':    
         
         choice = get_user_choice()
         
@@ -144,7 +144,7 @@ if __name__ == "__main__":
             qr_scan_recognition_sys()
         elif choice == '4':
             ble_scan_recognition_sys()        
-        elif choice == 'q':
-            print("\nTạm biệt")
+        elif choice == ':q':
+            print("\nTạm biệt. Hẹn gặp lại!")
         elif choice != None:
             print("\nLựa chọn không tìm thấy. Vui lòng chọn lại")
