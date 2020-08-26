@@ -21,6 +21,7 @@ def recv_data_from(sock):
 def threaded(c, ble_cli_addr):
 
     try:
+        c.send("\n Xin chào!")
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
