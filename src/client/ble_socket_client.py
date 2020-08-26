@@ -1,5 +1,4 @@
 import bluetooth
-import struct
 
 # port = 3
 #serverMACAddress = 'DC:A6:32:49:00:D5'
