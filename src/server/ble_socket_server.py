@@ -25,9 +25,9 @@ def threaded(c):
             # data received from client 
             
             data = recv_data_from(c) 
-            print('Sever received: ', data)
+            print('Máy chủ nhận được dữ liệu: ', data)
             if str(data) == 'quit' or str(data) == 'exit': 
-                print('Bye') 
+                print('Tạm biệt nhé!') 
                 
                 # lock released on exit 
                 server_thread_lock.release() 
@@ -59,7 +59,7 @@ class BLEServer:
     def listen(self):
         self.server.bind((self.bltaddr[0], self.server_port))
         self.server.listen(backlog)
-        print("Lang nghe tren socket")
+        print("Máy chủ đang lắng nghe trên socket BLE...")
         while True:
                 c, addr = self.server.accept()
                 print('Sender: ', str(addr))
