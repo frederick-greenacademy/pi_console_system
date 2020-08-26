@@ -21,7 +21,7 @@ def recv_data_from(sock):
 def threaded(c, ble_cli_addr):
 
     try:
-        c.send("\n Xin chào!")
+        c.send("\n Xin chào!".encode('utf-8'))
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
@@ -38,7 +38,8 @@ def threaded(c, ble_cli_addr):
             # data = data[::-1] 
     
             # Gởi dữ liệu quay trở lại máy khách...
-            c.send(data)
+            if data != None:
+                c.send(data)
 
     except:
         # Nhả luồng đã khóa sau khi máy khách ngắt kết nối
@@ -61,15 +62,22 @@ class BLEServer:
 
     def listen(self):
         # Máy chủ sẽ đính kèm vào địa chỉ BLE và cổng của chính nó 
-        self.server.bind((self.bltaddr[0], self.server_port))
-        self.server.listen(backlog)
-        print("Máy chủ đang lắng nghe trên socket BLE...")
-        while True:
-                c, addr = self.server.accept()
-                # khóa một luồng hiện tại
-                server_thread_lock.acquire()
-                print('Máy khách kết nối có địa chỉ :', addr[0], '- tại cổng: ', addr[1]) 
-        
-                # Tạo một luồng mới và trả về một nhận diện của chính nó 
-                start_new_thread(threaded, (c, addr[0]))
+        try:
+            self.server.bind((self.bltaddr[0], self.server_port))
+            self.server.listen(backlog)
+            print("Máy chủ đang lắng nghe trên socket BLE...")
+            while True:
+                    c, addr = self.server.accept()
+                    # khóa một luồng hiện tại
+                    server_thread_lock.acquire()
+                    print('Máy khách kết nối có địa chỉ :', addr[0], '- tại cổng: ', addr[1]) 
+            
+                    # Tạo một luồng mới và trả về một nhận diện của chính nó 
+                    start_new_thread(threaded, (c, addr[0]))
+        except KeyboardInterrupt as ki:
+            print('Máy chủ sẽ ngắt kết nối vì lỗi:', ki)
+            self.server.close()
+
+
+        # KeyboardInterrupt
         
