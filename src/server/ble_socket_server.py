@@ -18,32 +18,34 @@ def recv_data_from(sock):
             break
     return data
 
-def threaded(c):
+def threaded(c, ble_cli_addr):
 
     try:
         while True:
-            # data received from client 
-            
+            # dữ liệu nhận được 
             data = recv_data_from(c) 
             print('Máy chủ nhận được dữ liệu: ', data)
+
             if str(data) == 'quit' or str(data) == 'exit': 
-                print('Tạm biệt nhé!') 
+                print('Ngắt kết nối từ: ', ble_cli_addr) 
                 
-                # lock released on exit 
+                # Luồng khóa đã được nhả ra
                 server_thread_lock.release() 
                 break
     
             # reverse the given string from client 
             # data = data[::-1] 
     
-            # send back reversed string to client 
+            # Gởi dữ liệu quay trở lại máy khách...
             c.send(data)
 
     except:
-        server_thread_lock.release() 
+        # Nhả luồng đã khóa sau khi máy khách ngắt kết nối
+        server_thread_lock.release()
+        # đóng máy khách
         c.close()
   
-    # connection closed 
+    # đóng máy khách
     c.close() 
 
 
@@ -57,17 +59,16 @@ class BLEServer:
         print("Địa chỉ BLE máy chủ: ", str(self.bltaddr[0]))
 
     def listen(self):
+        # Máy chủ sẽ đính kèm vào địa chỉ BLE và cổng của chính nó 
         self.server.bind((self.bltaddr[0], self.server_port))
         self.server.listen(backlog)
         print("Máy chủ đang lắng nghe trên socket BLE...")
         while True:
                 c, addr = self.server.accept()
-                print('Sender: ', str(addr))
-
-                # lock acquired by client 
+                # khóa một luồng hiện tại
                 server_thread_lock.acquire()
-                print('Connected to :', addr[0], ':', addr[1]) 
+                print('Máy khách kết nối có địa chỉ :', addr[0], '- tại cổng: ', addr[1]) 
         
-                # Start a new thread and return its identifier 
-                start_new_thread(threaded, (c,))
+                # Tạo một luồng mới và trả về một nhận diện của chính nó 
+                start_new_thread(threaded, (c, addr[0]))
         

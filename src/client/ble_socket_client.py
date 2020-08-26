@@ -33,7 +33,7 @@ class BLEClient:
 
             while True:
                 
-                text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc") # Nghe thông tin gõ trên bàn phím
+                text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
                 
                 if text == "quit" or text == "exit":
                     self.client.send(text.encode('utf-8'))
