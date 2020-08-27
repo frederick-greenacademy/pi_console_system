@@ -25,7 +25,7 @@ def threaded(c, ble_cli_addr):
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
-            print('Máy chủ nhận được dữ liệu: ', data)
+            print('Máy chủ nhận được dữ liệu: ', str(data))
 
             if str(data) == 'quit' or str(data) == 'exit': 
                 print('Ngắt kết nối từ: ', ble_cli_addr) 

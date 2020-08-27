@@ -3,7 +3,6 @@ import requests
 import bluetooth
 import ble_socket_client
 
-
 # Dinh nghia cac tinh nang
 
 def message_for_welcome():
@@ -136,14 +135,14 @@ if __name__ == "__main__":
             scan_ble_nearby()
         elif choice == '-1':
             connect_ble_server()    
-        elif choice == '1':
-            manual_signin()
-        elif choice == '2':
-            facial_recognition_sys()
-        elif choice == '3':
-            qr_scan_recognition_sys()
-        elif choice == '4':
-            ble_scan_recognition_sys()        
+        # elif choice == '1':
+        #     manual_signin()
+        # elif choice == '2':
+        #     facial_recognition_sys()
+        # elif choice == '3':
+        #     qr_scan_recognition_sys()
+        # elif choice == '4':
+        #     ble_scan_recognition_sys()    
         elif choice == ':q':
             print("\nTạm biệt. Hẹn gặp lại!")
         elif choice != None:
