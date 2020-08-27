@@ -5,8 +5,10 @@ import bluetooth
 
 backlog = 1
 
+# Khai báo luồng khóa 
 server_thread_lock = threading.Lock() 
 
+# xử lý khi dữ liệu nhận có kích thước lớn hơn 4 KiB 
 def recv_data_from(sock):
     BUFF_SIZE = 4096 # 4 KiB
     data = b''
@@ -18,10 +20,12 @@ def recv_data_from(sock):
             break
     return data
 
+# Xử lý từng luồng cho từng Máy Khách 
+# kết nối đến máy chủ
 def threaded(c, ble_cli_addr):
 
     try:
-        c.send("\n Xin chào!".encode('utf-8'))
+        c.send(f"{ble_cli_addr} đã được kết nối!".encode('utf-8'))
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
@@ -33,7 +37,8 @@ def threaded(c, ble_cli_addr):
                 print('Ngắt kết nối từ: ', ble_cli_addr) 
                 
                 # Luồng khóa đã được nhả ra
-                server_thread_lock.release() 
+                server_thread_lock.release()
+                c.close()
                 break
     
             # reverse the given string from client 

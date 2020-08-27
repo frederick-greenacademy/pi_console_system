@@ -16,7 +16,7 @@ def message_for_welcome():
 def get_user_choice():
     # Thu thap lua chon cua nguoi dung
     print("\nChọn tên chương trình [x] và gõ Enter để kết thúc!")
-    print("Chương trình:")
+    print("DANH SÁCH:")
     print("[-2] Quét địa chỉ MAC của Bluetooth xung quanh")
     print("[-1] Kết nối đến Pi máy chủ qua BLE")
     print("[:q] Thoát.")

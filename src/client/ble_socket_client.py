@@ -1,7 +1,16 @@
 import bluetooth
 
-# port = 3
-#serverMACAddress = 'DC:A6:32:49:00:D5'
+
+def listen_user_enter_on_socket():
+    print("\nChọn tên chương trình [x] và gõ Enter để kết thúc!")
+    print("MENU:")
+    print("[1] Dang nhap vao he thong bang dong lenh")
+    print("[2] Dung Khuon Mat de dang nhap")
+    print("[3] Quet thiet bi Bluetooth de dang nhap")
+    print("[4] Quet ma QR de dang nhap")
+    print("[:q] Thoát.")
+    
+    return input("")
 
 def recv_data(sock):
     BUFF_SIZE = 4096 # 4 KiB
@@ -37,6 +46,7 @@ class BLEClient:
                 
                 if text == "quit" or text == "exit":
                     self.client.send(text.encode('utf-8'))
+                    self.client.close()
                     break
                 
                 self.client.send(text.encode('utf-8'))
