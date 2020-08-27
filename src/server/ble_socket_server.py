@@ -25,9 +25,11 @@ def threaded(c, ble_cli_addr):
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
-            print('Máy chủ nhận được dữ liệu: ', str(data))
+            
+            raw_data = data.decode("utf-8")
+            print('Máy chủ nhận được dữ liệu: ', raw_data)
 
-            if str(data) == 'quit' or str(data) == 'exit': 
+            if raw_data == 'quit' or raw_data == 'exit': 
                 print('Ngắt kết nối từ: ', ble_cli_addr) 
                 
                 # Luồng khóa đã được nhả ra
