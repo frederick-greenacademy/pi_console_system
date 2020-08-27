@@ -56,7 +56,8 @@ def threaded(c, ble_cli_addr):
         print('Đã ngắt kết nối: ', ble_cli_addr)
   
     # đóng máy khách
-    server_thread_lock.release()
+    # Không nên nhả ổ khóa luồng tiến trình ở đây.
+    # chỉ nên gọi đóng kết nối của máy khách.
     c.close()
     print('Đóng ngắt kết nối: ', ble_cli_addr)
 
