@@ -20,12 +20,6 @@ def get_user_choice():
     print("[-2] Quét địa chỉ MAC của Bluetooth xung quanh")
     print("[-1] Kết nối đến Pi máy chủ qua BLE")
     print("[:q] Thoát.")
-
-    # print("[1] Dang nhap vao he thong bang dong lenh")
-    # print("[2] Dung Khuon Mat de dang nhap")
-    # print("[3] Quet thiet bi Bluetooth de dang nhap")
-    # print("[4] Quet ma QR de dang nhap")
-    
     
     return input("")
     

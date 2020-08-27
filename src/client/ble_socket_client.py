@@ -2,13 +2,12 @@ import bluetooth
 
 
 def listen_user_enter_on_socket():
-    print("\nChọn tên chương trình [x] và gõ Enter để kết thúc!")
-    print("MENU:")
-    print("[1] Dang nhap vao he thong bang dong lenh")
-    print("[2] Dung Khuon Mat de dang nhap")
-    print("[3] Quet thiet bi Bluetooth de dang nhap")
-    print("[4] Quet ma QR de dang nhap")
-    print("[:q] Thoát.")
+    print("DANH SÁCH LỆNH [x]")
+    print("[1] Đăng nhập vào hệ thống bằng gởi lệnh")
+    print("[2] Đăng nhập bằng dùng khuôn mặt")
+    print("[3] Mở thiết bị BLE để đăng nhập")
+    print("[4] Quét mã QR để lấy thông tin ")
+    print("[:quit] Thoát.")
     
     return input("")
 
