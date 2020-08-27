@@ -33,7 +33,7 @@ def threaded(c, ble_cli_addr):
             raw_data = data.decode("utf-8")
             print('Máy chủ nhận được dữ liệu: ', raw_data)
 
-            if raw_data == 'quit' or raw_data == 'exit': 
+            if raw_data == ':quit' or raw_data == ':exit': 
                 print('Ngắt kết nối từ: ', ble_cli_addr) 
                 
                 # Luồng khóa đã được nhả ra
