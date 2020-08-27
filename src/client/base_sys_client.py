@@ -18,7 +18,7 @@ def get_user_choice():
     print("\nChọn tên chương trình [x] và gõ Enter để kết thúc!")
     print("DANH SÁCH:")
     print("[-2] Quét địa chỉ MAC của Bluetooth xung quanh")
-    print("[-1] Kết nối đến Pi máy chủ qua BLE")
+    print("[-1] Kết nối đến Máy Chủ bằng địa chỉ Bluetooth")
     print("[:q] Thoát.")
     
     return input("Chọn: ")
@@ -48,14 +48,13 @@ def manual_signin():
             print("Thong tin ban nhap khong day du!")    
 
 def connect_ble_server():
-    print('Kết nối đến Pi máy chủ qua BLE')
     
     is_Valid = True
     while is_Valid != False:
-        ble_addr_input = input('Gõ địa chỉ BLE máy chủ: ')
+        ble_addr_input = input('Gõ địa chỉ Bluetooth của Máy Chủ: ')
 
         if len(ble_addr_input) == 17:
-            print('Chuẩn bị kết nối đến BLE server: ', ble_addr_input)
+            print('Chuẩn bị kết nối đến địa chỉ: ', ble_addr_input)
 
             # Tạo BLE bluetooth socket cho máy khách 
             ble_client = ble_socket_client.BLEClient(ble_addr_input, 3)
@@ -63,7 +62,7 @@ def connect_ble_server():
 
             is_Valid = False
         elif len(ble_addr_input) > 0 and len(ble_addr_input) < 17:
-            print('Địa chỉ BLE không đúng. Tham khảo địa chỉ BLE như này: A0:52:00:C7:4X:00')
+            print('Địa chỉ Bluetooth không đúng. Địa chỉ giống như sau: A0:52:00:C7:4X:00')
 
 
 def scan_ble_nearby():

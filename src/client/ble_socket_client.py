@@ -44,12 +44,12 @@ def manual_signin(client_socket):
 
 
 def listen_user_enter_on_socket():
-    print("DANH SÁCH LỆNH [x]")
+    print("\nDANH SÁCH LỆNH [x] thao tác với Máy Chủ")
     print("[1] Đăng nhập vào hệ thống bằng gởi lệnh")
     print("[2] Đăng nhập bằng dùng khuôn mặt")
-    print("[3] Mở thiết bị BLE để đăng nhập")
+    print("[3] Hệ thống nhận diện bằng Bluetooth")
     print("[4] Quét mã QR để lấy thông tin ")
-    print("[:quit] Thoát.")
+    print("[:quit] Đóng kết nối với máy chủ.\n")
 
     return input("Chọn: ")
 
