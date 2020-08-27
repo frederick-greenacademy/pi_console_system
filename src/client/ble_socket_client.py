@@ -41,17 +41,20 @@ class BLEClient:
 
             while True:
                 
-                text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
-                
-                if text == "quit" or text == "exit":
-                    self.client.send(text.encode('utf-8'))
+                # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
+                # Lắng nghe thông điệp gõ trên socket 
+                choice = listen_user_enter_on_socket()
+
+                if choice == "quit" or choice == "exit":
+                    self.client.send(choice.encode('utf-8'))
                     self.client.close()
                     break
                 
-                self.client.send(text.encode('utf-8'))
-
-                data = recv_data(self.client) #self.client.recv(1024)
+                # Gửi và nhận dữ liệu đến máy chủ socket
+                self.client.send(choice.encode('utf-8'))
+                data = recv_data(self.client)
                 print("Data client received from server:", str(data.decode('utf-8')))
+
             self.client.close()
         except Exception as ex:
             print("Có lỗi xuất hiện: ", ex)
