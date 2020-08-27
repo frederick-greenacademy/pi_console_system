@@ -1,11 +1,16 @@
+import os
 import bluetooth
 import json
 
 def manual_signin(client_socket):
 
     isValid = False
+    # Lam sach man hinh Terminal
+    os.system('clear')
 
     while isValid != True:
+        
+        # Lắng nghe thông tin đưa vào.
         info_singin = input(
             "\nGõ: tên đăng nhập, mật khẩu, mã xe - được cách nhau bởi khoảng trắng.\nVd: user_name_01  mat_khau_1 car_id_0001.\nThông tin: ")
         info_array = info_singin.split(' ')
@@ -18,6 +23,10 @@ def manual_signin(client_socket):
 
             client_socket.send(json.dumps(message_info).encode('utf-8'))
             raw_data = recv_data(client_socket).decode('utf-8')
+            
+            # Lam sach man hinh Terminal
+            os.system('clear')
+
             print("Dữ liệu nhận từ máy chủ gởi:", raw_data)
             # response = requests.post(url, data=data)
 
@@ -29,6 +38,8 @@ def manual_signin(client_socket):
             #     else:
             #         print("Thong tin dang nhap khong ton tai!")
         else:
+            # Lam sach man hinh Terminal
+            # os.system('clear')
             print("Thong tin ban nhap khong day du!")
 
 
@@ -75,6 +86,9 @@ class BLEClient:
             while True:
 
                 # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
+                
+                os.system('clear')
+
                 # Lắng nghe thông điệp gõ trên socket
                 choice = listen_user_enter_on_socket()
 
