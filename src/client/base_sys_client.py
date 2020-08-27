@@ -21,7 +21,7 @@ def get_user_choice():
     print("[-1] Kết nối đến Pi máy chủ qua BLE")
     print("[:q] Thoát.")
     
-    return input("")
+    return input("Chọn: ")
     
 def manual_signin():
 
