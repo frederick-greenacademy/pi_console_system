@@ -53,9 +53,12 @@ def threaded(c, ble_cli_addr):
         server_thread_lock.release()
         # đóng máy khách
         c.close()
+        print('Đã ngắt kết nối: ', ble_cli_addr)
   
     # đóng máy khách
-    c.close() 
+    server_thread_lock.release()
+    c.close()
+    print('Đóng ngắt kết nối: ', ble_cli_addr)
 
 
 class BLEServer:
