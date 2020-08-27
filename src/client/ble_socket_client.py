@@ -116,7 +116,7 @@ class BLEClient:
             self.client.close()
         except Exception as ex:
             print("Có lỗi xuất hiện: ", ex)
-            self.client.send(":quit".encode('utf-8'))
+            # self.client.send(":quit".encode('utf-8'))
             self.client.close()
 
 

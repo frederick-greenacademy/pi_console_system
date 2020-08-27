@@ -122,10 +122,12 @@ if __name__ == "__main__":
 
     while choice != ':q':    
         
-        choice = get_user_choice()
         
         # Respond to the user's choice.
-        message_for_welcome()
+        # message_for_welcome()
+        
+        choice = get_user_choice()
+
         if choice == '-2':
             scan_ble_nearby()
         elif choice == '-1':

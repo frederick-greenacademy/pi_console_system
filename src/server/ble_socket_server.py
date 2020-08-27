@@ -38,7 +38,6 @@ def threaded(c, ble_cli_addr):
                 
                 # Luồng khóa đã được nhả ra
                 server_thread_lock.release()
-                c.close()
                 break
     
             # reverse the given string from client 
