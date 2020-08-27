@@ -94,7 +94,7 @@ class BLEClient:
 
                 if choice == ":quit" or choice == ":exit":
                     self.client.send(choice.encode('utf-8'))
-                    self.client.close()
+                    # self.client.close()
                     break
 
                 if choice == '1':
@@ -114,9 +114,9 @@ class BLEClient:
                 #print("Data client received from server:", str(data.decode('utf-8')))
 
             self.client.close()
-        except Exception as ex:
+        except KeyboardInterrupt as ex:
             print("Có lỗi xuất hiện: ", ex)
-            # self.client.send(":quit".encode('utf-8'))
+            self.client.send(":quit".encode('utf-8'))
             self.client.close()
 
 
