@@ -61,14 +61,15 @@ def connect_ble_server():
         ble_addr_input = input('Gõ địa chỉ BLE máy chủ: ')
 
         if len(ble_addr_input) == 17:
-            print('Chuẩn bị kết nối đến BLE server...')
+            print('Chuẩn bị kết nối đến BLE server: ', ble_addr_input)
 
+            # Tạo BLE bluetooth socket cho máy khách 
             ble_client = ble_socket_client.BLEClient(ble_addr_input, 3)
             ble_client.connect()
 
             is_Valid = False
         elif len(ble_addr_input) > 0 and len(ble_addr_input) < 17:
-            print('Địa chỉ BLE không đúng. Tham khảo địa chỉ BLE như này: A4:5E:60:D7:4D:32')
+            print('Địa chỉ BLE không đúng. Tham khảo địa chỉ BLE như này: A0:52:00:C7:4X:00')
 
 
 def scan_ble_nearby():
