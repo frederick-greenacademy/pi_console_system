@@ -1,7 +1,7 @@
 import os
 import requests
 import bluetooth
-import ble_socket_client
+import client.pi_bluetooth
 
 # Dinh nghia cac tinh nang
 
@@ -57,7 +57,7 @@ def connect_ble_server():
             print('Chuẩn bị kết nối đến địa chỉ: ', ble_addr_input)
 
             # Tạo BLE bluetooth socket cho máy khách 
-            ble_client = ble_socket_client.BLEClient(ble_addr_input, 3)
+            ble_client = client.pi_bluetooth.BLEClient(ble_addr_input, 3)
             ble_client.connect()
 
             is_Valid = False
