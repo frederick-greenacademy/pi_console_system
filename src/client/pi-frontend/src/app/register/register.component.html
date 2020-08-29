@@ -1,4 +1,5 @@
 <h2>Thông tin đăng ký</h2>
+<router-outlet></router-outlet>
 <form  *ngIf="!isFinishedForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
         <label for="firstName">Tên</label>
@@ -37,4 +38,3 @@
         <a routerLink="/login" class="btn btn-link">Hủy</a>
     </div>
 </form>
-<router-outlet></router-outlet>

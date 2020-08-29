@@ -12,13 +12,10 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   isMobileBrowser = true;
   videoWidth = 0;
   videoHeight = 0;
+  imgURL: any
 
   constraints = {
-    // video: {
-    //   facingMode: "environment",
-    //   width: { ideal: 4096 },
-    //   height: { ideal: 2160 }
-    // }
+
     audio: false,
     video: {
       facingMode: "environment",
@@ -30,18 +27,41 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   mediaStream: MediaStream = null;
 
   constructor(private renderer: Renderer2, private el: ElementRef) { }
-  
+
   ngOnInit(): void {
     this.isMobileBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    if(this.isMobileBrowser == false) {
+    if (this.isMobileBrowser == false) {
       this.startCamera()
     }
   }
-
+  
   handleFileInput(files: FileList) {
-    alert(files.item(0))
+    //alert(files.item(0))
+    // const context2d = this.canvas.nativeElement.getContext('2d');
+    // var imageData = context2d.createImageData(files.item(0), this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+
+    // context2d.putImageData(imageData, 0, 0);
+    
+    this.preview(files)
+
   }
 
+  preview(files: any) {
+    if (files.length === 0)
+      return;
+
+    var mimeType = files[0].type;
+    if (mimeType.match(/image\/*/) == null) {
+      // this.message = "Only images are supported.";
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onload = (_event) => {
+      this.imgURL = reader.result;
+    }
+  }
 
 
   @HostListener('window:popstate', ['$event'])

@@ -13,13 +13,19 @@
       Chụp ảnh
    </button>
 
+   <canvas *ngIf="!isMobileBrowser" #canvas class="vid2"></canvas>
+
    <div *ngIf="isMobileBrowser">
 
       <input class="btn btn-primary btn-circle" type="button" id="loadFileXml" value="Chụp ảnh"
          onclick="document.getElementById('file-input').click();" />
       <input type="file" style="display:none;" id="file-input" name="file-input" accept="image/*" capture="environment"
          (change)="handleFileInput($event.target.files)" />
+      <div>Xem trước ảnh</div>
+      
    </div>
 
-   <canvas #canvas class="vid2"></canvas>
+   <img style="width:320px;height:180px;border:0;" [src]="imgURL" />
+
+
 </div>
