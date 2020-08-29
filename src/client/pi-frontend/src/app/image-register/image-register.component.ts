@@ -37,6 +37,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     this.startCamera();
   }
 
+
   @HostListener('window:popstate', ['$event'])
   onPopState(event: any) {
     console.log('Back button pressed', event);
@@ -51,12 +52,33 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
           this.attachVideo.bind(this))
         .catch(this.handleError);
     } else {
-      alert('Rất tiếc, camera không tìm thấy.');
+      if(this.isMobileBrowser) {
+        alert('Vui lòng chờ');
+      }
+      else {
+        alert('Rất tiếc, camera không tìm thấy.');
+      }
     }
   }
 
   handleError(error) {
     console.log('Error: ', error);
+  }
+
+  isMobileBrowser() {
+    const toMatch = [
+      /Android/i,
+      /webOS/i,
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i,
+      /BlackBerry/i,
+      /Windows Phone/i
+    ];
+
+    return toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+    });
   }
 
   attachVideo(stream: any) {
