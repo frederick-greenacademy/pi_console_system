@@ -8,7 +8,7 @@
    <!-- Su dung cho WebView on iPhone or Android <input type="file" accept="image/*" capture="environment"> -->
 
 
-   <video class="vid" muted playsinline #video autoplay></video>
+   <video [ngClass]="isMobileBrowser==true?'display:none':'vid'" muted playsinline #video autoplay></video>
    <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle" (click)="capture()">
       Chụp ảnh
    </button>
