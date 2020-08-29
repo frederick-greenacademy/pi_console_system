@@ -25,7 +25,9 @@
       
    </div>
 
-   <img style="width:320px;height:180px;border:0;" [src]="imgURL" />
+   <div *ngIf="imgURL">
+      <img style="width:320px;height:180px;border:none;background:none" [src]="imgURL" />
+   </div>
 
 
 </div>
