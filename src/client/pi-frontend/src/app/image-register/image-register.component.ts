@@ -21,8 +21,8 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     audio: false,
     video: {
       facingMode: "user",
-      width: { min: 1024, ideal: 1280, max: 1920 },
-      height: { min: 576, ideal: 720, max: 1080 },
+      width: { min: 1024, max: 1920 },
+      height: { min: 576, max: 1080 },
       frameRate: { ideal: 10, max: 15 }
     }
   };
@@ -38,7 +38,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:popstate', ['$event'])
-  onPopState(event) {
+  onPopState(event: any) {
     console.log('Back button pressed', event);
   }
 
@@ -72,7 +72,13 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   capture() {
     this.renderer.setProperty(this.canvas.nativeElement, 'width', this.videoWidth);
     this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
-    this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
+    // this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
+    const context2d = this.canvas.nativeElement.getContext('2d');
+    context2d.drawImage(this.videoElement.nativeElement, 0, 0);
+
+    let imageData: ImageData = null;
+    imageData = context2d.getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+    console.log('Image data: ', imageData)
   }
 
   private stopMediaTracks() {
