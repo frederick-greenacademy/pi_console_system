@@ -8,7 +8,6 @@ import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDe
 export class ImageRegisterComponent implements OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
-  @ViewChild('mobileImageCapture', { static: true}) mobileImageCapture: ElementRef
 
   isMobileBrowser = true;
   videoWidth = 0;
@@ -36,16 +35,14 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     this.isMobileBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     if(this.isMobileBrowser == false) {
       this.startCamera()
-    } else {
-      this.listenMobileBrowserCaptureImageChanged()
     }
   }
 
-  listenMobileBrowserCaptureImageChanged() {
-    this.renderer.listen(this.mobileImageCapture.nativeElement, 'change', (e: any) => {
-      alert(e.target.files)
-    });
+  handleFileInput(files: FileList) {
+    alert(files.item(0))
   }
+
+
 
   @HostListener('window:popstate', ['$event'])
   onPopState(event: any) {
