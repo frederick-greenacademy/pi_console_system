@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
@@ -18,6 +18,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute
     // private authenticationService: AuthenticationService,
     // private userService: UserService,
     // private alertService: AlertService
@@ -41,13 +42,13 @@ export class RegisterComponent implements OnInit {
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
-    // this.submitted = true;
+    this.submitted = true;
 
     // // stop here if form is invalid
     // if (this.registerForm.invalid) {
     //   return;
     // }
-    this.router.navigate(['/image-register'])
+    this.router.navigate(['../image-register'],  { relativeTo: this.route })
   }
 
 }

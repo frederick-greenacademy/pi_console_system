@@ -4,14 +4,21 @@ import { AppComponent } from './app.component'
 import { from } from 'rxjs';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-import { ImageRegisterComponent} from './image-register/image-register.component'
+import { ImageRegisterComponent } from './image-register/image-register.component'
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'image-register', component: ImageRegisterComponent},
-  { path: '**', redirectTo: '' }
+  {
+    path: 'register', component: RegisterComponent,
+    children: [{
+      path: 'image-register',
+      component: ImageRegisterComponent
+    },]
+  },
+  // { path: 'image-register', component: ImageRegisterComponent },
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
