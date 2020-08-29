@@ -9,7 +9,7 @@
 
 
    <video [ngClass]="isMobileBrowser==true?'display:none':'vid'" muted playsinline #video autoplay></video>
-   <button [ngClass]="isMobileBrowser==true?'display:none':'btn btn-primary btn-circle'" (click)="capture()">
+   <button class="btn btn-primary btn-circle" *ngIf="!isMobileBrowser" (click)="capture()">
       Chụp ảnh
    </button>
 
