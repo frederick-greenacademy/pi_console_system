@@ -16,7 +16,7 @@
    <div *ngIf="isMobileBrowser">
       
       <input class="btn btn-primary btn-circle" type="button" id="loadFileXml" value="Chụp ảnh" onclick="document.getElementById('file-input').click();" />
-      <input type="file" style="display:none;" id="file" name="file-input" accept="image/*" capture="environment"/>
+      <input #mobileImageCapture type="file" style="display:none;" id="file" name="file-input" accept="image/*" capture="environment"/>
       <!-- <input type="file" accept="image/*" capture="environment"> -->
       <!-- <input type="file" accept="image/*" capture="environment" class="filestyle" data-classButton="btn btn-primary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here."> -->
    </div>
