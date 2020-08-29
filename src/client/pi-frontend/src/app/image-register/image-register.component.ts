@@ -5,10 +5,10 @@ import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDe
   templateUrl: './image-register.component.html',
   styleUrls: ['./image-register.component.css']
 })
-export class ImageRegisterComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ImageRegisterComponent implements OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
-  isDesktopBrowser = true;
+  isMobileBrowser = true;
   videoWidth = 0;
   videoHeight = 0;
 
@@ -30,17 +30,11 @@ export class ImageRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
 
   constructor(private renderer: Renderer2, private el: ElementRef) { }
   
-  ngAfterViewInit(): void {
-    this.isDesktopBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    if(this.isDesktopBrowser == false) {
+  ngOnInit(): void {
+    this.isMobileBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    if(this.isMobileBrowser == false) {
       this.startCamera()
     }
-  }
-  ngOnInit(): void {
-
-    // this.startCamera();
-    
-
   }
 
 
@@ -64,22 +58,6 @@ export class ImageRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
 
   handleError(error) {
     console.log('Error: ', error);
-  }
-
-  isMobileBrowser() {
-    const toMatch = [
-      /Android/i,
-      /webOS/i,
-      /iPhone/i,
-      /iPad/i,
-      /iPod/i,
-      /BlackBerry/i,
-      /Windows Phone/i
-    ];
-
-    return toMatch.some((toMatchItem) => {
-      return navigator.userAgent.match(toMatchItem);
-    });
   }
 
   attachVideo(stream: any) {
