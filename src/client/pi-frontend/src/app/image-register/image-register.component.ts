@@ -8,7 +8,7 @@ import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDe
 export class ImageRegisterComponent implements OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
-
+  isDesktopBrowser = true;
   videoWidth = 0;
   videoHeight = 0;
 
@@ -52,8 +52,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
           this.attachVideo.bind(this))
         .catch(this.handleError);
     } else {
-      if(this.isMobileBrowser) {
-        alert('Vui lòng chờ');
+      if (this.isMobileBrowser) {
+        // alert('Vui lòng chờ');
+        this.isDesktopBrowser = false
       }
       else {
         alert('Rất tiếc, camera không tìm thấy.');
