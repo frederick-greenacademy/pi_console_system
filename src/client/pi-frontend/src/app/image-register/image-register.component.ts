@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-image-register',
   templateUrl: './image-register.component.html',
   styleUrls: ['./image-register.component.css']
 })
-export class ImageRegisterComponent implements OnInit, OnDestroy {
+export class ImageRegisterComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('video', { static: true }) videoElement: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
   isDesktopBrowser = true;
@@ -26,15 +26,21 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
       frameRate: { ideal: 10, max: 15 }
     }
   };
-
-  video: any;
   mediaStream: MediaStream = null;
 
   constructor(private renderer: Renderer2, private el: ElementRef) { }
-
+  
+  ngAfterViewInit(): void {
+    this.isDesktopBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    if(this.isDesktopBrowser == false) {
+      this.startCamera()
+    }
+  }
   ngOnInit(): void {
-    this.video = this.videoElement.nativeElement;
-    this.startCamera();
+
+    // this.startCamera();
+    
+
   }
 
 
@@ -52,13 +58,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
           this.attachVideo.bind(this))
         .catch(this.handleError);
     } else {
-      if (this.isMobileBrowser) {
-        // alert('Vui lòng chờ');
-        this.isDesktopBrowser = false
-      }
-      else {
-        alert('Rất tiếc, camera không tìm thấy.');
-      }
+      alert('Rất tiếc, camera chưa sẵn sàng.');
     }
   }
 

@@ -1,18 +1,21 @@
 <div class="d-flex flex-column align-items-center">
 
-   <div *ngIf="isDesktopBrowser">
-      <video class="vid" autoplay muted playsinline #video autoplay></video>
-      <button class="btn btn-primary btn-circle" (click)="capture()">
-         Chụp ảnh
-      </button>
-   </div>
+   <!-- <video class="vid" autoplay muted playsinline #video autoplay></video>
+   <button class="btn btn-primary btn-circle" (click)="capture()">
+      Chụp ảnh
+   </button> -->
    <!-- Tham khao: https://developers.google.com/web/fundamentals/media/capturing-images/ -->
    <!-- Su dung cho WebView on iPhone or Android <input type="file" accept="image/*" capture="environment"> -->
 
-   <div *ngIf="!isDesktopBrowser">
+
+   <video class="vid" muted playsinline #video autoplay></video>
+   <button *ngIf="!isDesktopBrowser" class="btn btn-primary btn-circle" (click)="capture()">
+      Chụp ảnh
+   </button>
+
+   <div *ngIf="isDesktopBrowser">
       <input type="file" accept="image/*" capture="environment">
    </div>
-
 
    <canvas #canvas class="vid2"></canvas>
 </div>
