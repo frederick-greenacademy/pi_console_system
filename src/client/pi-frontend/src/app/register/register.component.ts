@@ -41,12 +41,13 @@ export class RegisterComponent implements OnInit {
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
-    this.submitted = true;
+    // this.submitted = true;
 
-    // stop here if form is invalid
-    if (this.registerForm.invalid) {
-      return;
-    }
+    // // stop here if form is invalid
+    // if (this.registerForm.invalid) {
+    //   return;
+    // }
+    this.router.navigate(['/image-register'])
   }
 
 }
