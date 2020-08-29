@@ -9,17 +9,16 @@
 
 
    <video [ngClass]="isMobileBrowser==true?'display:none':'vid'" muted playsinline #video autoplay></video>
-   <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle" (click)="capture()">
+   <button [ngClass]="isMobileBrowser==true?'display:none':'btn btn-primary btn-circle'" (click)="capture()">
       Chụp ảnh
    </button>
 
    <div *ngIf="isMobileBrowser">
-      
-      <input class="btn btn-primary btn-circle" type="button" id="loadFileXml" value="Chụp ảnh" onclick="document.getElementById('file-input').click();" />
-      <input type="file" style="display:none;" id="file-input" 
-      name="file-input" accept="image/*" capture="environment" (change)="handleFileInput($event.target.files)"/>
-      <!-- <input type="file" accept="image/*" capture="environment"> -->
-      <!-- <input type="file" accept="image/*" capture="environment" class="filestyle" data-classButton="btn btn-primary" data-input="false" data-classIcon="icon-plus" data-buttonText="Your label here."> -->
+
+      <input class="btn btn-primary btn-circle" type="button" id="loadFileXml" value="Chụp ảnh"
+         onclick="document.getElementById('file-input').click();" />
+      <input type="file" style="display:none;" id="file-input" name="file-input" accept="image/*" capture="environment"
+         (change)="handleFileInput($event.target.files)" />
    </div>
 
    <canvas #canvas class="vid2"></canvas>
