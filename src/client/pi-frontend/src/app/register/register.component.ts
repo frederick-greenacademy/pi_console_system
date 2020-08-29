@@ -36,6 +36,7 @@ export class RegisterComponent implements OnInit {
   onPopState(event) {
     console.log('Back button pressed', event);
     this.isFinishedForm = false;
+    this.router.navigate(['../'])
   }
 
   ngOnInit() {
