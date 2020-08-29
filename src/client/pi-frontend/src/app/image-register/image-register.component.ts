@@ -20,7 +20,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     // }
     audio: false,
     video: {
-      facingMode: "user",
+      facingMode: "environment",
       width: { min: 1024, max: 1920 },
       height: { min: 576, max: 1080 },
       frameRate: { ideal: 10, max: 15 }
