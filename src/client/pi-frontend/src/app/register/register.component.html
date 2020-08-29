@@ -1,5 +1,5 @@
 <h2>Thông tin đăng ký</h2>
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+<form  *ngIf="!isFinishedForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
         <label for="firstName">Tên</label>
         <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
@@ -37,3 +37,4 @@
         <a routerLink="/login" class="btn btn-link">Hủy</a>
     </div>
 </form>
+<router-outlet></router-outlet>

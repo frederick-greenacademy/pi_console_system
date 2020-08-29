@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HostListener } from '@angular/core';
 import { first } from 'rxjs/operators';
 
 
@@ -14,6 +15,7 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   loading = false;
   submitted = false;
+  isFinishedForm = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,6 +29,13 @@ export class RegisterComponent implements OnInit {
     // if (this.authenticationService.currentUserValue) {
     //   this.router.navigate(['/']);
     // }
+
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    console.log('Back button pressed', event);
+    this.isFinishedForm = false;
   }
 
   ngOnInit() {
@@ -42,13 +51,14 @@ export class RegisterComponent implements OnInit {
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
-    this.submitted = true;
+    // this.submitted = true;
 
     // // stop here if form is invalid
     // if (this.registerForm.invalid) {
     //   return;
     // }
-    this.router.navigate(['../image-register'],  { relativeTo: this.route })
+    this.isFinishedForm = true;
+    this.router.navigate(['register/image'])
   }
 
 }

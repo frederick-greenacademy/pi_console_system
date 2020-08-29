@@ -12,10 +12,12 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: 'register', component: RegisterComponent,
-    children: [{
-      path: 'image-register',
-      component: ImageRegisterComponent
-    },]
+    children: [
+      { path: '', redirectTo: 'register', pathMatch: 'full' },
+      {
+        path: 'image',
+        component: ImageRegisterComponent
+      },]
   },
   // { path: 'image-register', component: ImageRegisterComponent },
   { path: '**', component: PageNotFoundComponent }
