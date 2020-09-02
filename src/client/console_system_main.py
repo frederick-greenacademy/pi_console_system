@@ -22,30 +22,7 @@ def get_user_choice():
     print("[:q] Thoát.")
     
     return input("Chọn: ")
-    
-def manual_signin():
-
-    isValid = False
-    
-    while isValid != True:
-        info_singin = input("\nCung cap: ten dang nhap, mat khau, ma xe ID. Nhung thong tin nay cach nhau boi khoang trang.\nVd: run_hockey  mat_khau_123 car_id_0001\n\n")
-        info_array = info_singin.split(' ')
-        
-        if len(info_array) == 3:
-            print("Ban da dien: %s" % info_singin)
-            url = 'http://127.0.0.1:8000/api/signin'
-            data = {"user_name": info_array[0], "password": info_array[1], "car_id": info_array[2]}
-            response = requests.post(url, data=data)
-
-            # Kiem tra ket qua phan hoi
-            res = response.json()
-            if len(res) > 0 :
-                if res["result"] == "true":
-                    isValid = True
-                else:
-                    print("Thong tin dang nhap khong ton tai!")  
-        else:
-            print("Thong tin ban nhap khong day du!")    
+   
 
 def connect_ble_server():
     
