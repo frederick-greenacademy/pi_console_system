@@ -7,13 +7,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { ImageRegisterComponent } from './image-register/image-register.component';
+import { UserHomeComponent } from './login/user-home/user-home.component';
+import { AdminHomeComponent } from './login/admin-home/admin-home.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    ImageRegisterComponent
+    ImageRegisterComponent,
+    UserHomeComponent,
+    AdminHomeComponent
   ],
   imports: [
     BrowserModule,
