@@ -21,7 +21,7 @@ def manual_signin(client_socket):
             message_info = {
                 "user_name": info_array[0], "password": info_array[1], "car_id": info_array[2]}
 
-            client_socket.send(json.dumps(message_info).encode('utf-8'))
+            client_socket.send(json.dumps({ "command": "manual_signin", "data": message_info}).encode('utf-8'))
             raw_data = recv_data(client_socket).decode('utf-8')
             
             # Lam sach man hinh Terminal
