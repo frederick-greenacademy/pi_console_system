@@ -1,6 +1,11 @@
 import os
 import bluetooth
 import json
+import pyzbar.pyzbar as pyzbar
+import datetime
+import imutils
+import time
+import cv2
 
 def manual_signin(client_socket):
 
@@ -41,6 +46,60 @@ def manual_signin(client_socket):
             # Lam sach man hinh Terminal
             # os.system('clear')
             print("Thong tin ban nhap khong day du!")
+
+def scan_qrcode_from_came(client_socket):
+     
+    found = None
+    
+    try:
+        cap = cv2.VideoCapture(0)
+        cv2.namedWindow("QRScanner")
+        while True:
+            _, frame = cap.read()
+            frame = imutils.resize(frame, width=1024)
+            # Tim barcode trong khung Frame va giai ma
+            barcodes = pyzbar.decode(frame)
+            # kiem tra neu co nhieu barcodes
+            
+            for barcode in barcodes:
+                
+                (x, y, w, h) = barcode.rect
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+                # Kiem tra thong tin cua barcode 
+                barcodeData = barcode.data.decode("utf-8")
+                print(barcodeData)
+                if barcodeData != None:
+                    print("add add add")
+                    found = barcodeData
+                    break
+
+                barcodeType = barcode.type
+                # # draw the barcode data and barcode type on the image
+                text = "{} ({})".format(barcodeData, barcodeType)
+                cv2.putText(
+                    frame, text, 
+                    (x, y - 10), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                
+            # Hien thi khung frame khi quet
+            cv2.imshow("QRScanner", frame)
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord("x") or found != None:
+                break
+    
+        print("[X] cleaning up...")
+        cv2.destroyWindow('QRScanner')
+        cap.release()
+        cv2.waitKey(1)
+
+    except KeyboardInterrupt:
+        print("[X] cleaning up...")
+        cv2.destroyWindow('Barcode Scanner')
+        cap.release()
+        cv2.waitKey(1)
+        
+    
 
 
 def listen_user_enter_on_socket():
@@ -84,7 +143,7 @@ class BLEClient:
             self.client.connect((self.server_ble_addr, self.server_port))
 
             while True:
-
+                
                 # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
                 
                 os.system('clear')
@@ -94,7 +153,7 @@ class BLEClient:
 
                 if choice == ":quit" or choice == ":exit":
                     self.client.send(choice.encode('utf-8'))
-                    # self.client.close()
+                    
                     break
 
                 if choice == '1':
@@ -105,21 +164,11 @@ class BLEClient:
                 elif choice == '3':
                     print('')
                 elif choice == '4':
+                    scan_qrcode_from_came(self.client)
                     print('')
-                ###
-                # Gửi và nhận dữ liệu đến máy chủ socket
-                ###
-                # self.client.send(choice.encode('utf-8'))
-                #data = recv_data(self.client)
-                #print("Data client received from server:", str(data.decode('utf-8')))
 
             self.client.close()
         except KeyboardInterrupt as ex:
             print("Có lỗi xuất hiện: ", ex)
             self.client.send(":quit".encode('utf-8'))
             self.client.close()
-
-
-# if __name__ == "__main__":
-#     client = BLTCClient()
-#     client.connect()
