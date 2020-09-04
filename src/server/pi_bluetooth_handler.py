@@ -2,6 +2,7 @@
 from _thread import start_new_thread
 import threading 
 import bluetooth
+import json
 
 backlog = 1
 
@@ -31,7 +32,7 @@ def threaded(c, ble_cli_addr):
             data = recv_data_from(c) 
             
             raw_data = data.decode("utf-8")
-            print('Máy chủ nhận được dữ liệu: ', raw_data)
+            # print('Máy chủ nhận được dữ liệu: ', raw_data)
 
             if raw_data == ':quit' or raw_data == ':exit': 
                 print('Ngắt kết nối từ: ', ble_cli_addr) 
@@ -39,8 +40,20 @@ def threaded(c, ble_cli_addr):
                 # Luồng khóa đã được nhả ra
                 server_thread_lock.release()
                 break
-            if type(raw_data) is dict:
-                print('La dict')
+
+            raw_data_json = json.loads(raw_data)
+            action = raw_data_json.get('command', None)
+
+            if action != None: # kiem tra raw_data co phai la tu dien
+                
+                if action == "manual_signin":
+                    
+                    content = raw_data_json['data']
+                    print(f"Manual sigin with content: {content}")
+                    
+                    user_name = content['user_name']
+                    password = content['password']
+                    car_id = content['car_id']
             # reverse the given string from client 
             # data = data[::-1] 
     
