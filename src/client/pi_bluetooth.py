@@ -24,7 +24,7 @@ def manual_signin(client_socket):
 
     isValid = False
     # Lam sach man hinh Terminal
-    os.system('clear')
+    # os.system('clear')
 
     while isValid != True:
         
@@ -43,13 +43,13 @@ def manual_signin(client_socket):
                 json.dumps(
                     { "command": "manual_signin", 
                     "data": message_info}).encode('utf-8'))
-            
+            ### Hoat
             try:
                 data = recv_data(client_socket)
                 raw_data = data.decode('utf-8')
                 raw_data_json = json.loads(raw_data)
         
-                # print("XX:", raw_data_json)
+                print("XX:", raw_data_json)
                 is_result = raw_data_json['result']
                 
                 if is_result == 'false':
@@ -159,18 +159,37 @@ class BLEClient:
         self.client = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
     def connect(self):
-        # self.client.connect((serverMACAddress, port))
+
+        pi_local_storage.read_config()
 
         # print("Gõ thông điệp gửi đi và nhấn Enter để kết thúc:")
         try:
             # Thực hiện kết nối đến máy chủ với: BLE MAC và cổng
             self.client.connect((self.server_ble_addr, self.server_port))
 
+            try:
+                data = recv_data(self.client)
+                raw_data = data.decode('utf-8')
+                raw_data_json = json.loads(raw_data)
+        
+                print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
+                command = raw_data_json.get('command', None)
+                if command != None:
+                    if command == 'update_data':
+                        data_will_update = raw_data_json["data"]
+                        print("\n\nDữ liệu can dc update:", data_will_update)
+                        pi_local_storage.add_list_data(data_will_update)
+                        pi_local_storage.save_config()
+
+
+            except Exception as f:
+                print("Loi:", f)
+
             while True:
                 
                 # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
                 
-                os.system('clear')
+                # os.system('clear')
 
                 # Lắng nghe thông điệp gõ trên socket
                 choice = listen_user_enter_on_socket()
@@ -192,6 +211,8 @@ class BLEClient:
                     scan_qrcode_from_came(self.client)
                     print('')
 
+                
+                    
             self.client.close()
         except KeyboardInterrupt as ex:
             print("Có lỗi xuất hiện: ", ex)
