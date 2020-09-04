@@ -1,5 +1,6 @@
 import os
 import bluetooth
+import pi_local_storage
 import json
 import pyzbar.pyzbar as pyzbar
 import datetime
@@ -179,6 +180,7 @@ class BLEClient:
                     
                     break
 
+                    
                 if choice == '1':
                     print('')
                     manual_signin(self.client)
