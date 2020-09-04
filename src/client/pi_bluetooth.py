@@ -56,7 +56,7 @@ def manual_signin(client_socket):
                 else:
                     print(f"\n\n Thông tin: {message_info} đã tìm thấy!!!\n\n")
                     isValid = False
-                    
+
             except Exception as f:
                 print("Loi:", f)
             
@@ -117,7 +117,25 @@ def scan_qrcode_from_came(client_socket):
         cap.release()
         cv2.waitKey(1)
         
-    
+def scan_ble_nearby():
+    print('Đang quét BLE xung quanh...')
+
+    nearby_devices = bluetooth.discover_devices(
+        duration=48, lookup_names=True, flush_cache=True, lookup_class=False
+    )
+    count = len(nearby_devices)
+    print(f"Số thiết bị tìm được: {count}")
+
+    if count <= 0:
+        return
+
+    for addr, name in nearby_devices:
+        try:
+            print(f"{addr} - {name}")
+        except UnicodeEncodeError:
+            print(f"{addr} {name.encode('utf-8', 'replace')}")
+
+    return nearby_devices           
 
 
 def listen_user_enter_on_socket():
@@ -167,7 +185,7 @@ class BLEClient:
                 elif choice == '2':
                     print('')
                 elif choice == '3':
-                    print('')
+                    nearby_device = scan_ble_nearby()
                 elif choice == '4':
                     scan_qrcode_from_came(self.client)
                     print('')

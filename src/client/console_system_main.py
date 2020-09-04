@@ -42,80 +42,20 @@ def connect_ble_server():
             print('Địa chỉ Bluetooth không đúng. Địa chỉ giống như sau: A0:52:00:C7:4X:00')
 
 
-def scan_ble_nearby():
-    print('Đang quét BLE xung quanh...')
-
-    nearby_devices = bluetooth.discover_devices(
-        duration=48, lookup_names=True, flush_cache=True, lookup_class=False
-    )
-    count = len(nearby_devices)
-    print(f"Số thiết bị tìm được: {count}")
-
-    if count <= 0:
-        return
-
-    for addr, name in nearby_devices:
-        try:
-            print(f"{addr} - {name}")
-        except UnicodeEncodeError:
-            print(f"{addr} {name.encode('utf-8', 'replace')}")
-
-        
-def facial_recognition_sys():
-    print("\n")
-
-
-def qr_scan_recognition_sys():
-    print("\n")
-
-def ble_scan_recognition_sys():
-    
-    # cprint('\nQuét BLE...', 'red', attrs=['blink'])
-    nearby_devices = bluetooth.discover_devices(
-        duration=48, lookup_names=True, flush_cache=True, lookup_class=False
-    )
-    count = len(nearby_devices)
-    print(f"Số thiết bị tìm được {count}")
-
-    ble_mac_adds = []
-    for addr, name in nearby_devices:
-        try:
-            ble_mac_adds.append(str(addr))
-            print(f"{addr} - {name}")
-        except UnicodeEncodeError:
-            print(f"{addr} {name.encode('utf-8', 'replace')}")
-
-    if len(ble_mac_adds) > 0:
-        for e in ble_mac_adds:
-            if e == "E9:C6:06:B5:65:90":
-                print(f"Đã tìm thấy.")
-
 if __name__ == "__main__":
     names = []
 
     choice = ''
     message_for_welcome()
 
-    while choice != ':q':    
-        
-        
-        # Respond to the user's choice.
-        # message_for_welcome()
+    while choice != ':q':
         
         choice = get_user_choice()
 
         if choice == '-2':
-            scan_ble_nearby()
+            pi_bluetooth.scan_ble_nearby()
         elif choice == '-1':
-            connect_ble_server()    
-        # elif choice == '1':
-        #     manual_signin()
-        # elif choice == '2':
-        #     facial_recognition_sys()
-        # elif choice == '3':
-        #     qr_scan_recognition_sys()
-        # elif choice == '4':
-        #     ble_scan_recognition_sys()    
+            connect_ble_server()   
         elif choice == ':q':
             print("\nTạm biệt. Hẹn gặp lại!")
         elif choice != None:
