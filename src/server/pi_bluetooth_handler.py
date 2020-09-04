@@ -39,7 +39,8 @@ def threaded(c, ble_cli_addr):
                 # Luồng khóa đã được nhả ra
                 server_thread_lock.release()
                 break
-    
+            if type(raw_data) is dict:
+                print('La dict')
             # reverse the given string from client 
             # data = data[::-1] 
     
