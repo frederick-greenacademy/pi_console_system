@@ -95,7 +95,7 @@ def get_bluetooth_list(ble_cli_addr):
                 (group_name_find,))
         res = cur.fetchall()
         for x in res:
-            if x != ble_cli_addr:
+            if x[0] != ble_cli_addr:
                 need_updates.append(x[0])   
 
         return need_updates
