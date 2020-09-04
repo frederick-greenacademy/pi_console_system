@@ -3,6 +3,7 @@ from _thread import start_new_thread
 import threading 
 import bluetooth
 import json
+import authen_handler
 
 backlog = 1
 
@@ -26,7 +27,7 @@ def recv_data_from(sock):
 def threaded(c, ble_cli_addr):
 
     try:
-        c.send(f"{ble_cli_addr} đã được kết nối!".encode('utf-8'))
+        # c.send(f"{ble_cli_addr} đã được kết nối!".encode('utf-8'))
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
@@ -54,12 +55,17 @@ def threaded(c, ble_cli_addr):
                     user_name = content['user_name']
                     password = content['password']
                     car_id = content['car_id']
+
+                    message = authen_handler.is_user_exits_with(user_name, password, car_id)
+                    if message != None:
+                        print("Sent mess:" , message)
+                        c.send(json.dumps(message).encode('utf-8'))
             # reverse the given string from client 
             # data = data[::-1] 
     
             # Gởi dữ liệu quay trở lại máy khách...
-            if data != None:
-                c.send(data)
+            # if data != None:
+            #     c.send(data)
 
     except:
         # Nhả luồng đã khóa sau khi máy khách ngắt kết nối
