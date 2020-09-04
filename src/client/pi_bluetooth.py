@@ -7,6 +7,18 @@ import imutils
 import time
 import cv2
 
+def recv_data(client_socket):
+    BUFF_SIZE = 4096  # 4 KiB
+    data = b''
+    while True:
+        part = client_socket.recv(BUFF_SIZE)
+        data += part
+        if len(part) < BUFF_SIZE:
+            # either 0 or end of data
+            break
+    return data
+
+
 def manual_signin(client_socket):
 
     isValid = False
@@ -26,22 +38,28 @@ def manual_signin(client_socket):
             message_info = {
                 "user_name": info_array[0], "password": info_array[1], "car_id": info_array[2]}
 
-            client_socket.send(json.dumps({ "command": "manual_signin", "data": message_info}).encode('utf-8'))
-            raw_data = recv_data(client_socket).decode('utf-8')
+            client_socket.send(
+                json.dumps(
+                    { "command": "manual_signin", 
+                    "data": message_info}).encode('utf-8'))
             
-            # Lam sach man hinh Terminal
-            os.system('clear')
-
-            print("Dữ liệu nhận từ máy chủ gởi:", raw_data)
-            # response = requests.post(url, data=data)
-
-            # # Kiem tra ket qua phan hoi
-            # res = response.json()
-            # if len(res) > 0 :
-            #     if res["result"] == "true":
-            #         isValid = True
-            #     else:
-            #         print("Thong tin dang nhap khong ton tai!")
+            try:
+                data = recv_data(client_socket)
+                raw_data = data.decode('utf-8')
+                raw_data_json = json.loads(raw_data)
+        
+                # print("XX:", raw_data_json)
+                is_result = raw_data_json['result']
+                
+                if is_result == 'false':
+                     print(u'\n\nLỗi: {}\n\n'.format(raw_data_json['error']))
+                else:
+                    print(f"\n\n Thông tin: {message_info} đã tìm thấy!!!\n\n")
+                    isValid = False
+                    
+            except Exception as f:
+                print("Loi:", f)
+            
         else:
             # Lam sach man hinh Terminal
             # os.system('clear')
@@ -111,19 +129,6 @@ def listen_user_enter_on_socket():
     print("[:quit] Đóng kết nối với máy chủ.\n")
 
     return input("Chọn: ")
-
-
-def recv_data(client_socket):
-    BUFF_SIZE = 4096  # 4 KiB
-    data = b''
-    while True:
-        part = client_socket.recv(BUFF_SIZE)
-        data += part
-        if len(part) < BUFF_SIZE:
-            # either 0 or end of data
-            break
-    return data
-
 
 class BLEClient:
     def __init__(self, server_ble_addr, server_port):
