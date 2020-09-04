@@ -5,12 +5,15 @@ import bluetooth
 import json
 import authen_handler
 import schedule
+import sched
 import time
 
 backlog = 1
 
 # Khai báo luồng khóa 
-server_thread_lock = threading.Lock() 
+server_thread_lock = threading.Lock()
+
+s = sched.scheduler(time.time, time.sleep)
 
 # xử lý khi dữ liệu nhận có kích thước lớn hơn 4 KiB 
 def recv_data_from(sock):
@@ -25,11 +28,14 @@ def recv_data_from(sock):
     return data
 
 def do_check_new_data(c,ble_cli_addr):
+    print(time.time())
     print("Run: -----------------------")
     data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
     message_info = {
                 "command": "update_data", "data": data_needs_update}
     c.send(json.dumps(message_info).encode('utf-8'))
+    print(time.time())
+
 
 # Xử lý từng luồng cho từng Máy Khách 
 # kết nối đến máy chủ
@@ -40,11 +46,15 @@ def threaded(c, ble_cli_addr):
         # message_info = {
         #         "command": "update_data", "data": data_needs_update}
         # c.send(json.dumps(message_info).encode('utf-8'))
-        schedule.every(2).minutes.do(do_check_new_data(c, ble_cli_addr))
         
+
         while True:
-            schedule.run_pending() 
-            time.sleep(1)
+            now = time.time()
+            s.enterabs(now + 1, 1, do_check_new_data, argument=(c,ble_cli_addr))
+            t = threading.Thread(target=s.run)
+            t.start()                       
+            t.join()
+
             # dữ liệu nhận được 
             data = recv_data_from(c) 
             
