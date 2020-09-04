@@ -69,4 +69,39 @@ def is_user_exits_with(user, passwrd, car_id):
         print(f"Error SQL: {e}")
         return json.dumps({"result":"false", "error": e})
 
+
+def get_bluetooth_list(ble_cli_addr):
+
+    try:
+        conn = mariadb.connect(**config)
+    except mariadb.Error as e:
+        print(f"Loi ket noi den MariaDB: {e}")
+        return json.dumps({"result":"false", "error": "không thể kết nối đến db"})
+    
+    cur = conn.cursor()
+
+    need_updates = []
+    try: 
+        cur.execute(
+        "SELECT group_name FROM Device WHERE bluetooth_mac_address=?", (ble_cli_addr,))
+        ttt = cur.fetchall()
+        if len(ttt) <= 0:
+            conn.close()
+            return need_updates
+
+        group_name_find = ttt[0][0]    
+        cur.execute(
+                "SELECT bluetooth_mac_address FROM Device WHERE group_name=?", 
+                (group_name_find,))
+        res = cur.fetchall()
+        for x in res:
+            if x != ble_cli_addr:
+                need_updates.append(x[0])   
+
+        return need_updates
+
+    except mariadb.Error as e: 
+        print(f"Error SQL: {e}")
+        return json.dumps({"result":"false", "error": e})        
+
     

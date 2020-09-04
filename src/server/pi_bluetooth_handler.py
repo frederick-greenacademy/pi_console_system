@@ -27,7 +27,11 @@ def recv_data_from(sock):
 def threaded(c, ble_cli_addr):
 
     try:
-        # c.send(f"{ble_cli_addr} đã được kết nối!".encode('utf-8'))
+        data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+        message_info = {
+                "command": "update_data", "data": data_needs_update}
+        c.send(json.dumps(message_info).encode('utf-8'))
+        
         while True:
             # dữ liệu nhận được 
             data = recv_data_from(c) 
