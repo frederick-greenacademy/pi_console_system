@@ -40,16 +40,17 @@ def is_user_exits_with(user, passwrd, car_id):
 
 
         account_id_value = None
-        for account_id, password in cur:
-            if password == passwrd:
-                account_id_value = account_id
+        for x in ttt:
+            print(f"U: {x[0]}, P: {x[1]}")
+            if x[1] == passwrd:
+                account_id_value = x[0]
                 break
         
         if account_id_value != None:
             
             cur.execute(
                 "SELECT vehicle_id, status FROM Rent WHERE account_id=? and vehicle_id=? and status=?", 
-                (account_id, car_id, 'thuê'))
+                (account_id_value, car_id, 'thuê'))
             
             vehicle_id_value = cur.fetchall()
             conn.close()

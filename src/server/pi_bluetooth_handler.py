@@ -59,7 +59,7 @@ def threaded(c, ble_cli_addr):
                     message = authen_handler.is_user_exits_with(user_name, password, car_id)
                     if message != None:
                         print("Sent mess:" , message)
-                        c.send(json.dumps(message).encode('utf-8'))
+                        c.send(message.encode('utf-8'))
             # reverse the given string from client 
             # data = data[::-1] 
     
