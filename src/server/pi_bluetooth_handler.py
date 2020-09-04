@@ -4,6 +4,8 @@ import threading
 import bluetooth
 import json
 import authen_handler
+import schedule
+import time
 
 backlog = 1
 
@@ -22,17 +24,27 @@ def recv_data_from(sock):
             break
     return data
 
+def do_check_new_data(c,ble_cli_addr):
+    print("Run: -----------------------")
+    data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+    message_info = {
+                "command": "update_data", "data": data_needs_update}
+    c.send(json.dumps(message_info).encode('utf-8'))
+
 # Xử lý từng luồng cho từng Máy Khách 
 # kết nối đến máy chủ
 def threaded(c, ble_cli_addr):
 
     try:
-        data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
-        message_info = {
-                "command": "update_data", "data": data_needs_update}
-        c.send(json.dumps(message_info).encode('utf-8'))
+        # data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+        # message_info = {
+        #         "command": "update_data", "data": data_needs_update}
+        # c.send(json.dumps(message_info).encode('utf-8'))
+        schedule.every(2).minutes.do(do_check_new_data(c, ble_cli_addr))
         
         while True:
+            schedule.run_pending() 
+            time.sleep(1)
             # dữ liệu nhận được 
             data = recv_data_from(c) 
             
