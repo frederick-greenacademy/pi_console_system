@@ -7,6 +7,7 @@ import datetime
 # import imutils
 import time
 import cv2
+import readline
 
 
 def recv_data(client_socket):
