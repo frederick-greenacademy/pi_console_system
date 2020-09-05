@@ -135,7 +135,7 @@ def scan_ble_nearby():
         duration=48, lookup_names=True, flush_cache=True, lookup_class=False
     )
     count = len(nearby_devices)
-    print(f"Số thiết bị tìm được: {count}")
+    print(f"-----Số thiết bị tìm được: {count}-------")
     
     founds = []
     if count <= 0:
@@ -143,21 +143,24 @@ def scan_ble_nearby():
 
     for addr, name in nearby_devices:
         try:
-            print(f"{addr} - {name}")
-            founds.append(str(addr))
+            print(f"{addr.decode('utf-8')} - {name}")
+            founds.append(addr.decode("utf-8"))
         except UnicodeEncodeError:
             print(f"{addr} {name.encode('utf-8', 'replace')}")
+    print("\n")
 
     return founds
 
 
 def listen_user_enter_on_socket():
-    print("\nDANH SÁCH LỆNH [x] thao tác với Máy Chủ")
-    print("[1] Đăng nhập vào hệ thống bằng gởi lệnh")
-    print("[2] Đăng nhập bằng dùng khuôn mặt")
-    print("[3] Hệ thống nhận diện bằng Bluetooth")
-    print("[4] Quét mã QR để lấy thông tin ")
-    print("[:quit] Đóng kết nối với máy chủ.\n")
+    print("\t**********************************************************")
+    print("\t\tDANH SÁCH LỆNH [x] thao tác với Máy Chủ")
+    print("\t\t[1] Đăng nhập vào hệ thống bằng gởi lệnh")
+    print("\t\t[2] Đăng nhập bằng dùng khuôn mặt")
+    print("\t\t[3] Hệ thống nhận diện bằng Bluetooth")
+    print("\t\t[4] Quét mã QR để lấy thông tin ")
+    print("\t\t[:quit] Đóng kết nối với máy chủ.")
+    print("\t**********************************************************\n\n")
 
     return input("Chọn: ")
 
@@ -190,12 +193,12 @@ class BLEClient:
                 if command != None:
                     if command == 'update_data':
                         data_will_update = raw_data_json["data"]
-                        print("\n\nDữ liệu can dc update:", data_will_update)
+                        # print("\n\nDữ liệu can dc update:", data_will_update)
                         pi_local_storage.add_list_data(data_will_update)
                         pi_local_storage.save_config()
                     elif command == 'show_qr_info':
                         data_will_show = raw_data_json["data"]
-                        print('\n\nThông tin cụ thể của QR mới quét: ', data_will_show)    
+                        # print('\n\nThông tin cụ thể của QR mới quét: ', data_will_show)    
 
             except Exception as f:
                 print("Loi:", f)
@@ -225,6 +228,8 @@ class BLEClient:
                     
                     if config != None and len(founds) > 0:
                         is_found = False
+                        # print("\nTim thay: ", founds)
+                        # print("\nItems: ", config["items"])
                         for x in founds:
                             if x in config["items"]:
                                 print(f"\n\nBluetooth: {x} tìm thấy.")
