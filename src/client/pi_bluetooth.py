@@ -4,7 +4,7 @@ import pi_local_storage
 import json
 import pyzbar.pyzbar as pyzbar
 import datetime
-import imutils
+# import imutils
 import time
 import cv2
 
@@ -67,17 +67,15 @@ def manual_signin(client_socket):
             print("Thong tin ban nhap khong day du!")
 
 
-def scan_qrcode_from_came(client_socket):
+def scan_qrcode_from_cam(client_socket):
     try:
-        cap = cv2.VideoCapture(0)
-        cv2.namedWindow("QRScanner")
 
-        found = None
+        cap = cv2.VideoCapture(0)
         is_valid = True
 
         while is_valid:
             _, frame = cap.read()
-            frame = imutils.resize(frame, width=1024)
+            # frame = imutils.resize(frame, width=1024)
             # Tim barcode trong khung Frame va giai ma
             barcodes = pyzbar.decode(frame)
             # kiem tra neu co nhieu barcodes
@@ -88,11 +86,12 @@ def scan_qrcode_from_came(client_socket):
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
                 # Kiem tra thong tin cua barcode
-                barcodeData = barcode.data.decode("utf-8")
+                bar_code_data = barcode.data.decode("utf-8")
 
-                if barcodeData != None:
-                    print("Tim thay du lieu trong QR nhu sau:", barcodeData)
-                    found = barcodeData
+                if bar_code_data != None:
+                    print("Tim thay du lieu trong QR nhu sau:", bar_code_data)
+                    client_socket.send(json.dumps({"command": "qr_scanned", "data": str(bar_code_data)}).encode('utf-8'))
+                    thread.sleep(1)
                     is_valid = False
                     break
 
@@ -111,15 +110,11 @@ def scan_qrcode_from_came(client_socket):
                 is_valid = False
                 break
 
-        print("[X] cleaning up...")
+        print("[X] cleaning up - L1...")
         cv2.destroyWindow('QRScanner')
         cap.release()
         cv2.waitKey(1)
         # Gui QR code den may chu
-        if found != None:
-            client_socket.send(
-                json.dumps({"command": "qr_scanned",
-                            "data": found}).encode('utf-8'))
 
     except KeyboardInterrupt:
         print("[X] cleaning up...")
@@ -136,7 +131,7 @@ def scan_ble_nearby():
     )
     count = len(nearby_devices)
     print(f"-----Số thiết bị tìm được: {count}-------")
-    
+
     founds = []
     if count <= 0:
         return founds
@@ -198,7 +193,7 @@ class BLEClient:
                         pi_local_storage.save_config()
                     elif command == 'show_qr_info':
                         data_will_show = raw_data_json["data"]
-                        # print('\n\nThông tin cụ thể của QR mới quét: ', data_will_show)    
+                        # print('\n\nThông tin cụ thể của QR mới quét: ', data_will_show)
 
             except Exception as f:
                 print("Loi:", f)
@@ -225,7 +220,7 @@ class BLEClient:
                 elif choice == '3':
                     founds = scan_ble_nearby()
                     config = pi_local_storage.get_config()
-                    
+
                     if config != None and len(founds) > 0:
                         is_found = False
                         # print("\nTim thay: ", founds)
@@ -237,10 +232,10 @@ class BLEClient:
                                 is_found = True
                                 break
                         if is_found == False:
-                            print("Thiết bị của bạn chưa được đăng ký")    
-                                 
+                            print("Thiết bị của bạn chưa được đăng ký")
+
                 elif choice == '4':
-                    scan_qrcode_from_came(self.client)
+                    scan_qrcode_from_cam(self.client)
                     print('')
 
             self.client.close()
