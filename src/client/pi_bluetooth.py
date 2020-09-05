@@ -180,6 +180,23 @@ class BLEClient:
             # Thực hiện kết nối đến máy chủ với: BLE MAC và cổng
             self.client.connect((self.server_ble_addr, self.server_port))
 
+            try:
+                data = recv_data(self.client)
+                raw_data = data.decode('utf-8')
+                raw_data_json = json.loads(raw_data)
+
+                print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
+                command = raw_data_json.get('command', None)
+                if command != None:
+                    if command == 'update_data':
+                        data_will_update = raw_data_json["data"]
+                        # print("\n\nDữ liệu can dc update:", data_will_update)
+                        pi_local_storage.add_list_data(data_will_update)
+                        pi_local_storage.save_config()
+
+            except Exception as f:
+                print("\n\nLỗi nhan du lieu Tai máy khách là:", f)
+
             while True:
 
                 # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
@@ -196,22 +213,6 @@ class BLEClient:
                 if choice == '1':
                     print('')
                     manual_signin(self.client)
-                    try:
-                        data = recv_data(self.client)
-                        raw_data = data.decode('utf-8')
-                        raw_data_json = json.loads(raw_data)
-
-                        print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
-                        command = raw_data_json.get('command', None)
-                        if command != None:
-                            if command == 'update_data':
-                                data_will_update = raw_data_json["data"]
-                                # print("\n\nDữ liệu can dc update:", data_will_update)
-                                pi_local_storage.add_list_data(data_will_update)
-                                pi_local_storage.save_config()
-
-                    except Exception as f:
-                        print("\n\nLỗi nhan du lieu Tai máy khách là:", f)
 
                 elif choice == '2':
                     print('')
