@@ -94,13 +94,13 @@ def threaded(c, ble_cli_addr):
                         print("Gởi thông tin về máy khách:", message)
 
                 elif action == 'qr_scanned':
-                    print(f"Thông tin của qr code quét được: {content}")
+
                     message = business_handler.get_account_info(content)
+                    print(f"Thông tin của qr code quét được: {message}")
+
                     if message != None:
-                        message_info = {
-                            "command": "show_qr_info", "data": message["message"]}
-                        c.send(message_info.encode('utf-8'))
-                        print("Gởi thông tin về máy khách:", message_info)
+                        print('Sent:')
+                        c.send(message.encode('utf-8'))
 
             # reverse the given string from client
             # data = data[::-1]
@@ -109,7 +109,8 @@ def threaded(c, ble_cli_addr):
             # if data != None:
             #     c.send(data)
 
-    except:
+    except Exception as e:
+        print('Đã ngắt kết nối vi loi: ', e)
         # Nhả luồng đã khóa sau khi máy khách ngắt kết nối
         server_thread_lock.release()
         # đóng máy khách

@@ -114,14 +114,19 @@ def get_account_info(account_id):
     cur = conn.cursor()
 
     try:
+        print(f"XXXXXXX: {1 + 2}")
         cur.execute(
-            "SELECT first_name, last_name FROM Account WHERE account_id=?", (account_id,))
+            "SELECT first_name, last_name FROM Account WHERE account_id=?", (2,))
         ttt = cur.fetchall()
         if len(ttt) <= 0:
             conn.close()
-            return json.dumps({"result": "true", "message": "không tìm thấy thông tin với mã QR này"})
+            return json.dumps({"command": "show_qr_info", "result": "true", "data": "không tìm thấy thông tin với mã QR này"})
 
-        return json.dumps({"result": "true", "message": {
+        print(f"XXXXXXX: {ttt}")
+        conn.close()
+        return json.dumps({
+            "command": "show_qr_info",
+            "result": "true", "data": {
             "first_name": ttt[0][0],
             "last_name": ttt[0][1]
         }})
