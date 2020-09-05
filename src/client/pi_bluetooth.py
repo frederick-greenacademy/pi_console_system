@@ -191,6 +191,9 @@ class BLEClient:
                         print("\n\nDữ liệu can dc update:", data_will_update)
                         pi_local_storage.add_list_data(data_will_update)
                         pi_local_storage.save_config()
+                    elif command == 'show_qr_info':
+                        data_will_show = raw_data_json["data"]
+                        print('\n\nThông tin cụ thể của QR mới quét: ', data_will_show)    
 
             except Exception as f:
                 print("Loi:", f)

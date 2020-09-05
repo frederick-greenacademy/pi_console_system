@@ -97,8 +97,10 @@ def threaded(c, ble_cli_addr):
                     print(f"Thông tin của qr code quét được: {content}")
                     message = business_handler.get_account_info(content)
                     if message != None:
-                        c.send(message.encode('utf-8'))
-                        print("Gởi thông tin về máy khách:", message)
+                        message_info = {
+                            "command": "show_qr_info", "data": message["message"]}
+                        c.send(message_info.encode('utf-8'))
+                        print("Gởi thông tin về máy khách:", message_info)
 
             # reverse the given string from client
             # data = data[::-1]
