@@ -22,11 +22,11 @@ def recv_data(client_socket):
 
 
 def manual_signin(client_socket):
-    isValid = False
+    isValid = True
     # Lam sach man hinh Terminal
     # os.system('clear')
 
-    while isValid != True:
+    while isValid != False:
 
         # Lắng nghe thông tin đưa vào.
         info_singin = input(
