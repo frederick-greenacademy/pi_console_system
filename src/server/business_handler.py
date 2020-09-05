@@ -104,4 +104,30 @@ def get_bluetooth_list(ble_cli_addr):
         print(f"Error SQL: {e}")
         return json.dumps({"result":"false", "error": e})        
 
+def get_account_info(account_id):
+
+    try:
+        conn = mariadb.connect(**config)
+    except mariadb.Error as e:
+        print(f"Loi ket noi den MariaDB: {e}")
+        return json.dumps({"result":"false", "error": "không thể kết nối đến db"})
     
+    cur = conn.cursor()
+
+    
+    try: 
+        cur.execute(
+        "SELECT first_name, last_name FROM Account WHERE account_id=?", (account_id,))
+        ttt = cur.fetchall()
+        if len(ttt) <= 0:
+            conn.close()
+            return json.dumps({"result":"true", "message": "không tìm thấy thông tin với mã QR này"})
+
+        return json.dumps({"result":"true", "message": {
+            "first_name": ttt[0][0],
+            "last_name": ttt[0][1]
+            }})
+
+    except mariadb.Error as e: 
+        print(f"Error SQL: {e}")
+        return json.dumps({"result":"false", "message": e})    

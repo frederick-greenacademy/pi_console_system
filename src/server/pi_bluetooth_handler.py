@@ -3,7 +3,7 @@ from _thread import start_new_thread
 import threading 
 import bluetooth
 import json
-import authen_handler
+import business_handler
 import schedule
 import sched
 import time
@@ -30,7 +30,7 @@ def recv_data_from(sock):
 def do_check_new_data(c,ble_cli_addr):
     print(time.time())
     print("Run: -----------------------")
-    data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+    data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
     message_info = {
                 "command": "update_data", "data": data_needs_update}
     c.send(json.dumps(message_info).encode('utf-8'))
@@ -42,7 +42,7 @@ def do_check_new_data(c,ble_cli_addr):
 def threaded(c, ble_cli_addr):
 
     try:
-        # data_needs_update = authen_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+        # data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
         # message_info = {
         #         "command": "update_data", "data": data_needs_update}
         # c.send(json.dumps(message_info).encode('utf-8'))
@@ -82,7 +82,7 @@ def threaded(c, ble_cli_addr):
                     password = content['password']
                     car_id = content['car_id']
 
-                    message = authen_handler.is_user_exits_with(user_name, password, car_id)
+                    message = business_handler.is_user_exits_with(user_name, password, car_id)
                     if message != None:
                         print("Sent mess:" , message)
                         c.send(message.encode('utf-8'))
