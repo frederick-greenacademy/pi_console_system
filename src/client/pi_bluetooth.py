@@ -67,7 +67,7 @@ def manual_signin(client_socket):
             print("Thong tin ban nhap khong day du!")
 
 
-def scan_qrcode_from_cam(client_socket):
+def scan_qrcode_from_cam():
     try:
 
         cap = cv2.VideoCapture(0)
@@ -87,25 +87,21 @@ def scan_qrcode_from_cam(client_socket):
 
                 # Kiem tra thong tin cua barcode
                 bar_code_data = barcode.data.decode("utf-8")
-
-                if bar_code_data != None:
-                    founds = bar_code_data
-                    print("Tim thay du lieu trong QR nhu sau:", bar_code_data)
-                    # client_socket.send(json.dumps({"command": "qr_scanned", "data": str(bar_code_data)}).encode('utf-8'))
-                    # time.sleep(2)
-                    is_valid = False
-                    break
-
-                barcodeType = barcode.type
-                # # draw the barcode data and barcode type on the image
-                text = "{} ({})".format(barcodeData, barcodeType)
+                text = "{} ({})".format(bar_code_data, barcode.type)
                 cv2.putText(
                     frame, text,
                     (x, y - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
+                if bar_code_data != None:
+                    founds = bar_code_data
+                    print("Tim thay du lieu trong QR nhu sau:", bar_code_data)
+                    is_valid = False
+                    break
+
             # Hien thi khung frame khi quet
             cv2.imshow("QRScanner", frame)
+
             key = cv2.waitKey(1) & 0xFF
             if key == ord("x"):
                 is_valid = False
@@ -240,9 +236,12 @@ class BLEClient:
                             print("Thiết bị của bạn chưa được đăng ký")
 
                 elif choice == '4':
-                    qr = scan_qrcode_from_cam(self.client)
+                    qr = scan_qrcode_from_cam()
                     if qr != None:
-                        print('XXXXXX-XXXX-YYYY', qr)
+
+                        message = { "command": "qr_scanned", "data": qr }
+                        print('XXXXXX-XXXX-YYYY', message)
+                        self.client.send(json.dumps(message).encode('utf-8'))
 
             self.client.close()
         except KeyboardInterrupt as ex:
