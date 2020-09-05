@@ -46,18 +46,18 @@ def do_check_new_data(c, ble_cli_addr):
 def threaded(c, ble_cli_addr):
 
     try:
-        # data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
-        # message_info = {
-        #         "command": "update_data", "data": data_needs_update}
-        # c.send(json.dumps(message_info).encode('utf-8'))
+        data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+        message_info = {
+                "command": "update_data", "data": data_needs_update}
+        c.send(json.dumps(message_info).encode('utf-8'))
 
         while True:
-            now = time.time()
-            s.enterabs(now + 1, 1, do_check_new_data,
-                       argument=(c, ble_cli_addr))
-            t = threading.Thread(target=s.run)
-            t.start()
-            t.join()
+            # now = time.time()
+            # s.enterabs(now + 1, 1, do_check_new_data,
+            #            argument=(c, ble_cli_addr))
+            # t = threading.Thread(target=s.run)
+            # t.start()
+            # t.join()
 
             # dữ liệu nhận được
             data = recv_data_from(c)
