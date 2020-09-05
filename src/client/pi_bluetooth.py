@@ -179,26 +179,6 @@ class BLEClient:
             # Thực hiện kết nối đến máy chủ với: BLE MAC và cổng
             self.client.connect((self.server_ble_addr, self.server_port))
 
-            try:
-                data = recv_data(self.client)
-                raw_data = data.decode('utf-8')
-                raw_data_json = json.loads(raw_data)
-
-                print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
-                command = raw_data_json.get('command', None)
-                if command != None:
-                    if command == 'update_data':
-                        data_will_update = raw_data_json["data"]
-                        # print("\n\nDữ liệu can dc update:", data_will_update)
-                        pi_local_storage.add_list_data(data_will_update)
-                        pi_local_storage.save_config()
-                    elif command == 'show_qr_info':
-                        data_will_show = raw_data_json["data"]
-                        # print('\n\nThông tin cụ thể của QR mới quét: ', data_will_show)
-
-            except Exception as f:
-                print("Loi:", f)
-
             while True:
 
                 # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
@@ -210,22 +190,37 @@ class BLEClient:
 
                 if choice == ":quit" or choice == ":exit":
                     self.client.send(choice.encode('utf-8'))
-
                     break
 
                 if choice == '1':
                     print('')
                     manual_signin(self.client)
+                    try:
+                        data = recv_data(self.client)
+                        raw_data = data.decode('utf-8')
+                        raw_data_json = json.loads(raw_data)
+
+                        print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
+                        command = raw_data_json.get('command', None)
+                        if command != None:
+                            if command == 'update_data':
+                                data_will_update = raw_data_json["data"]
+                                # print("\n\nDữ liệu can dc update:", data_will_update)
+                                pi_local_storage.add_list_data(data_will_update)
+                                pi_local_storage.save_config()
+
+                    except Exception as f:
+                        print("\n\nLỗi nhan du lieu Tai máy khách là:", f)
+
                 elif choice == '2':
                     print('')
+
                 elif choice == '3':
                     founds = scan_ble_nearby()
                     config = pi_local_storage.get_config()
 
                     if config != None and len(founds) > 0:
                         is_found = False
-                        # print("\nTim thay: ", founds)
-                        # print("\nItems: ", config["items"])
                         for x in founds:
                             if x in config["items"]:
                                 print(f"\n\nBluetooth: {x} tìm thấy.")
@@ -233,15 +228,28 @@ class BLEClient:
                                 is_found = True
                                 break
                         if is_found == False:
-                            print("Thiết bị của bạn chưa được đăng ký")
+                            print("\n\nThiết bị của bạn chưa được đăng ký")
 
                 elif choice == '4':
                     qr = scan_qrcode_from_cam()
-                    if qr != None:
 
+                    if qr != None:
                         message = { "command": "qr_scanned", "data": qr }
-                        print('XXXXXX-XXXX-YYYY', message)
+                        # print('XXXXXX-XXXX-YYYY', message)
                         self.client.send(json.dumps(message).encode('utf-8'))
+
+                        try:
+                            data = recv_data(self.client)
+                            raw_data = data.decode('utf-8')
+                            raw_data_json = json.loads(raw_data)
+                            command = raw_data_json.get('command', None)
+                            if command != None:
+                                if command == 'show_qr_info':
+                                    data_will_show = raw_data_json["data"]
+                                    print('\n\nThông tin chi tiết của mã QR là: ', data_will_show)
+
+                        except Exception as f:
+                            print("\n\nLỗi nhan du lieu Tai máy khách là:", f)
 
             self.client.close()
         except KeyboardInterrupt as ex:
