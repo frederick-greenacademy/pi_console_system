@@ -183,7 +183,7 @@ class BLEClient:
                 raw_data = data.decode('utf-8')
                 raw_data_json = json.loads(raw_data)
 
-                print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
+                # print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
                 command = raw_data_json.get('command', None)
                 if command != None:
                     if command == 'update_data':
