@@ -28,3 +28,7 @@ def add_list_data(list_data):
 def save_config():
     with open(file_name, 'w') as f:
         json.dump(config, f)
+
+def get_config():
+    read_config()
+    return config        

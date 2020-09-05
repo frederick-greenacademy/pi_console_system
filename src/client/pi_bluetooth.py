@@ -136,17 +136,19 @@ def scan_ble_nearby():
     )
     count = len(nearby_devices)
     print(f"Số thiết bị tìm được: {count}")
-
+    
+    founds = []
     if count <= 0:
-        return
+        return founds
 
     for addr, name in nearby_devices:
         try:
             print(f"{addr} - {name}")
+            founds.append(str(addr))
         except UnicodeEncodeError:
             print(f"{addr} {name.encode('utf-8', 'replace')}")
 
-    return nearby_devices
+    return founds
 
 
 def listen_user_enter_on_socket():
@@ -183,7 +185,7 @@ class BLEClient:
                 raw_data = data.decode('utf-8')
                 raw_data_json = json.loads(raw_data)
 
-                # print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
+                print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
                 command = raw_data_json.get('command', None)
                 if command != None:
                     if command == 'update_data':
@@ -218,7 +220,20 @@ class BLEClient:
                 elif choice == '2':
                     print('')
                 elif choice == '3':
-                    nearby_device = scan_ble_nearby()
+                    founds = scan_ble_nearby()
+                    config = pi_local_storage.get_config()
+                    
+                    if config != None and len(founds) > 0:
+                        is_found = False
+                        for x in founds:
+                            if x in config["items"]:
+                                print(f"\n\nBluetooth: {x} tìm thấy.")
+                                print("Bạn có thể dùng nó để mở cửa")
+                                is_found = True
+                                break
+                        if is_found == False:
+                            print("Thiết bị của bạn chưa được đăng ký")    
+                                 
                 elif choice == '4':
                     scan_qrcode_from_came(self.client)
                     print('')
