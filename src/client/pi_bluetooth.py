@@ -8,6 +8,7 @@ import imutils
 import time
 import cv2
 
+
 def recv_data(client_socket):
     BUFF_SIZE = 4096  # 4 KiB
     data = b''
@@ -21,13 +22,12 @@ def recv_data(client_socket):
 
 
 def manual_signin(client_socket):
-
     isValid = False
     # Lam sach man hinh Terminal
     # os.system('clear')
 
     while isValid != True:
-        
+
         # Lắng nghe thông tin đưa vào.
         info_singin = input(
             "\nGõ: tên đăng nhập, mật khẩu, mã xe - được cách nhau bởi khoảng trắng.\nVd: user_name_01  mat_khau_1 car_id_0001.\nThông tin: ")
@@ -41,83 +41,93 @@ def manual_signin(client_socket):
 
             client_socket.send(
                 json.dumps(
-                    { "command": "manual_signin", 
-                    "data": message_info}).encode('utf-8'))
-            ### Hoat
+                    {"command": "manual_signin",
+                     "data": message_info}).encode('utf-8'))
+            # Hoat
             try:
                 data = recv_data(client_socket)
                 raw_data = data.decode('utf-8')
                 raw_data_json = json.loads(raw_data)
-        
+
                 print("XX:", raw_data_json)
                 is_result = raw_data_json['result']
-                
+
                 if is_result == 'false':
-                     print(u'\n\nLỗi: {}\n\n'.format(raw_data_json['error']))
+                    print(u'\n\nLỗi: {}\n\n'.format(raw_data_json['error']))
                 else:
                     print(f"\n\n Thông tin: {message_info} đã tìm thấy!!!\n\n")
                     isValid = False
 
             except Exception as f:
                 print("Loi:", f)
-            
+
         else:
             # Lam sach man hinh Terminal
             # os.system('clear')
             print("Thong tin ban nhap khong day du!")
 
+
 def scan_qrcode_from_came(client_socket):
-     
-    found = None
-    
     try:
         cap = cv2.VideoCapture(0)
         cv2.namedWindow("QRScanner")
-        while True:
+
+        found = None
+        is_valid = True
+
+        while is_valid:
             _, frame = cap.read()
             frame = imutils.resize(frame, width=1024)
             # Tim barcode trong khung Frame va giai ma
             barcodes = pyzbar.decode(frame)
             # kiem tra neu co nhieu barcodes
-            
+
             for barcode in barcodes:
-                
+
                 (x, y, w, h) = barcode.rect
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-                # Kiem tra thong tin cua barcode 
+                # Kiem tra thong tin cua barcode
                 barcodeData = barcode.data.decode("utf-8")
-                print(barcodeData)
+
                 if barcodeData != None:
-                    print("add add add")
+                    print("Tim thay du lieu trong QR nhu sau:", barcodeData)
                     found = barcodeData
+                    is_valid = False
                     break
 
                 barcodeType = barcode.type
                 # # draw the barcode data and barcode type on the image
                 text = "{} ({})".format(barcodeData, barcodeType)
                 cv2.putText(
-                    frame, text, 
-                    (x, y - 10), 
+                    frame, text,
+                    (x, y - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                
+
             # Hien thi khung frame khi quet
             cv2.imshow("QRScanner", frame)
             key = cv2.waitKey(1) & 0xFF
             if key == ord("x") or found != None:
+                is_valid = False
                 break
-    
+
         print("[X] cleaning up...")
         cv2.destroyWindow('QRScanner')
         cap.release()
         cv2.waitKey(1)
+        # Gui QR code den may chu
+        if found != None:
+            client_socket.send(
+                json.dumps({"command": "qr_scanned",
+                            "data": found}).encode('utf-8'))
 
     except KeyboardInterrupt:
         print("[X] cleaning up...")
         cv2.destroyWindow('Barcode Scanner')
         cap.release()
         cv2.waitKey(1)
-        
+
+
 def scan_ble_nearby():
     print('Đang quét BLE xung quanh...')
 
@@ -136,7 +146,7 @@ def scan_ble_nearby():
         except UnicodeEncodeError:
             print(f"{addr} {name.encode('utf-8', 'replace')}")
 
-    return nearby_devices           
+    return nearby_devices
 
 
 def listen_user_enter_on_socket():
@@ -148,6 +158,7 @@ def listen_user_enter_on_socket():
     print("[:quit] Đóng kết nối với máy chủ.\n")
 
     return input("Chọn: ")
+
 
 class BLEClient:
     def __init__(self, server_ble_addr, server_port):
@@ -171,7 +182,7 @@ class BLEClient:
                 data = recv_data(self.client)
                 raw_data = data.decode('utf-8')
                 raw_data_json = json.loads(raw_data)
-        
+
                 print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
                 command = raw_data_json.get('command', None)
                 if command != None:
@@ -181,14 +192,13 @@ class BLEClient:
                         pi_local_storage.add_list_data(data_will_update)
                         pi_local_storage.save_config()
 
-
             except Exception as f:
                 print("Loi:", f)
 
             while True:
-                
+
                 # text = input("Gõ thông điệp để gởi. Nhấn Enter để kết thúc.\n") # Nghe thông tin gõ trên bàn phím
-                
+
                 # os.system('clear')
 
                 # Lắng nghe thông điệp gõ trên socket
@@ -196,10 +206,9 @@ class BLEClient:
 
                 if choice == ":quit" or choice == ":exit":
                     self.client.send(choice.encode('utf-8'))
-                    
+
                     break
 
-                    
                 if choice == '1':
                     print('')
                     manual_signin(self.client)
@@ -211,8 +220,6 @@ class BLEClient:
                     scan_qrcode_from_came(self.client)
                     print('')
 
-                
-                    
             self.client.close()
         except KeyboardInterrupt as ex:
             print("Có lỗi xuất hiện: ", ex)

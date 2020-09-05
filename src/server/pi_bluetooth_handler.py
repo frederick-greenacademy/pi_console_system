@@ -1,6 +1,6 @@
-# import thread module 
+# import thread module
 from _thread import start_new_thread
-import threading 
+import threading
 import bluetooth
 import json
 import business_handler
@@ -10,14 +10,16 @@ import time
 
 backlog = 1
 
-# Khai báo luồng khóa 
+# Khai báo luồng khóa
 server_thread_lock = threading.Lock()
 
 s = sched.scheduler(time.time, time.sleep)
 
-# xử lý khi dữ liệu nhận có kích thước lớn hơn 4 KiB 
+# xử lý khi dữ liệu nhận có kích thước lớn hơn 4 KiB
+
+
 def recv_data_from(sock):
-    BUFF_SIZE = 4096 # 4 KiB
+    BUFF_SIZE = 4096  # 4 KiB
     data = b''
     while True:
         part = sock.recv(BUFF_SIZE)
@@ -27,17 +29,19 @@ def recv_data_from(sock):
             break
     return data
 
-def do_check_new_data(c,ble_cli_addr):
+
+def do_check_new_data(c, ble_cli_addr):
     print(time.time())
     print("Run: -----------------------")
-    data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+    data_needs_update = business_handler.get_bluetooth_list(
+        ble_cli_addr=ble_cli_addr)
     message_info = {
-                "command": "update_data", "data": data_needs_update}
+        "command": "update_data", "data": data_needs_update}
     c.send(json.dumps(message_info).encode('utf-8'))
     print(time.time())
 
 
-# Xử lý từng luồng cho từng Máy Khách 
+# Xử lý từng luồng cho từng Máy Khách
 # kết nối đến máy chủ
 def threaded(c, ble_cli_addr):
 
@@ -46,24 +50,24 @@ def threaded(c, ble_cli_addr):
         # message_info = {
         #         "command": "update_data", "data": data_needs_update}
         # c.send(json.dumps(message_info).encode('utf-8'))
-        
 
         while True:
             now = time.time()
-            s.enterabs(now + 1, 1, do_check_new_data, argument=(c,ble_cli_addr))
+            s.enterabs(now + 1, 1, do_check_new_data,
+                       argument=(c, ble_cli_addr))
             t = threading.Thread(target=s.run)
-            t.start()                       
+            t.start()
             t.join()
 
-            # dữ liệu nhận được 
-            data = recv_data_from(c) 
-            
+            # dữ liệu nhận được
+            data = recv_data_from(c)
+
             raw_data = data.decode("utf-8")
             # print('Máy chủ nhận được dữ liệu: ', raw_data)
 
-            if raw_data == ':quit' or raw_data == ':exit': 
-                print('Ngắt kết nối từ: ', ble_cli_addr) 
-                
+            if raw_data == ':quit' or raw_data == ':exit':
+                print('Ngắt kết nối từ: ', ble_cli_addr)
+
                 # Luồng khóa đã được nhả ra
                 server_thread_lock.release()
                 break
@@ -71,24 +75,34 @@ def threaded(c, ble_cli_addr):
             raw_data_json = json.loads(raw_data)
             action = raw_data_json.get('command', None)
 
-            if action != None: # kiem tra raw_data co phai la tu dien
-                
+            if action != None:  # kiem tra raw_data co phai la tu dien
+
+                content = raw_data_json['data']
+
                 if action == "manual_signin":
-                    
-                    content = raw_data_json['data']
-                    print(f"Manual sigin with content: {content}")
-                    
+
+                    print(f"Thông tin của manual_signin nhận được: {content}")
+
                     user_name = content['user_name']
                     password = content['password']
                     car_id = content['car_id']
 
-                    message = business_handler.is_user_exits_with(user_name, password, car_id)
+                    message = business_handler.is_user_exits_with(
+                        user_name, password, car_id)
                     if message != None:
-                        print("Sent mess:" , message)
                         c.send(message.encode('utf-8'))
-            # reverse the given string from client 
-            # data = data[::-1] 
-    
+                        print("Gởi thông tin về máy khách:", message)
+
+                elif action == 'qr_scanned':
+                    print(f"Thông tin của qr code quét được: {content}")
+                    message = business_handler.get_account_info(content)
+                    if message != None:
+                        c.send(message.encode('utf-8'))
+                        print("Gởi thông tin về máy khách:", message)
+
+            # reverse the given string from client
+            # data = data[::-1]
+
             # Gởi dữ liệu quay trở lại máy khách...
             # if data != None:
             #     c.send(data)
@@ -99,7 +113,7 @@ def threaded(c, ble_cli_addr):
         # đóng máy khách
         c.close()
         print('Đã ngắt kết nối: ', ble_cli_addr)
-  
+
     # đóng máy khách
     # Không nên nhả ổ khóa luồng tiến trình ở đây.
     # chỉ nên gọi đóng kết nối của máy khách.
@@ -108,7 +122,7 @@ def threaded(c, ble_cli_addr):
 
 
 class BLEServer:
-    
+
     def __init__(self, server_port):
         super().__init__()
         self.server_port = server_port
@@ -117,23 +131,20 @@ class BLEServer:
         print("Địa chỉ BLE máy chủ: ", str(self.bltaddr[0]))
 
     def listen(self):
-        # Máy chủ sẽ đính kèm vào địa chỉ BLE và cổng của chính nó 
+        # Máy chủ sẽ đính kèm vào địa chỉ BLE và cổng của chính nó
         try:
             self.server.bind((self.bltaddr[0], self.server_port))
             self.server.listen(backlog)
             print("Máy chủ đang lắng nghe trên socket BLE...")
             while True:
-                    c, addr = self.server.accept()
-                    # khóa một luồng hiện tại
-                    server_thread_lock.acquire()
-                    print('Máy khách kết nối có địa chỉ :', addr[0], '- tại cổng: ', addr[1]) 
-            
-                    # Tạo một luồng mới và trả về một nhận diện của chính nó 
-                    start_new_thread(threaded, (c, addr[0]))
+                c, addr = self.server.accept()
+                # khóa một luồng hiện tại
+                server_thread_lock.acquire()
+                print('Máy khách kết nối có địa chỉ :',
+                      addr[0], '- tại cổng: ', addr[1])
+
+                # Tạo một luồng mới và trả về một nhận diện của chính nó
+                start_new_thread(threaded, (c, addr[0]))
         except KeyboardInterrupt as ki:
             print('Máy chủ sẽ ngắt kết nối vì lỗi:', ki)
             self.server.close()
-
-
-        # KeyboardInterrupt
-        

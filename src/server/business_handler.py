@@ -26,18 +26,17 @@ def is_user_exits_with(user, passwrd, car_id):
         conn = mariadb.connect(**config)
     except mariadb.Error as e:
         print(f"Loi ket noi den MariaDB: {e}")
-        return json.dumps({"result":"false", "error": "không thể kết nối đến db"})
-    
+        return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
+
     cur = conn.cursor()
 
-    try: 
+    try:
         cur.execute(
-        "SELECT account_id, password FROM Account WHERE user_name=?", (user,))
+            "SELECT account_id, password FROM Account WHERE user_name=?", (user,))
         ttt = cur.fetchall()
         if len(ttt) <= 0:
             conn.close()
-            return json.dumps({"result":"false", "error": "Không tìm thấy tên tài khoản này: " + user})
-
+            return json.dumps({"result": "false", "error": "Không tìm thấy tên tài khoản này: " + user})
 
         account_id_value = None
         for x in ttt:
@@ -45,29 +44,28 @@ def is_user_exits_with(user, passwrd, car_id):
             if x[1] == passwrd:
                 account_id_value = x[0]
                 break
-        
+
         if account_id_value != None:
-            
+
             cur.execute(
-                "SELECT vehicle_id, status FROM Rent WHERE account_id=? and vehicle_id=? and status=?", 
+                "SELECT vehicle_id, status FROM Rent WHERE account_id=? and vehicle_id=? and status=?",
                 (account_id_value, car_id, 'thuê'))
-            
+
             vehicle_id_value = cur.fetchall()
             conn.close()
 
             if len(vehicle_id_value) > 0:
-                return json.dumps({"result":"true", "message": "Tìm thấy mã xe của tk: " + user})
+                return json.dumps({"result": "true", "message": "Tìm thấy mã xe của tk: " + user})
             else:
-                return json.dumps({"result":"false", "error": "Không tìm thấy ma xe: " + car_id})          
+                return json.dumps({"result": "false", "error": "Không tìm thấy ma xe: " + car_id})
 
         else:
             conn.close()
-            return json.dumps({"result":"false", "error": "Mật khẩu của tài khoản này không đúng"})      
-    
+            return json.dumps({"result": "false", "error": "Mật khẩu của tài khoản này không đúng"})
 
-    except mariadb.Error as e: 
+    except mariadb.Error as e:
         print(f"Error SQL: {e}")
-        return json.dumps({"result":"false", "error": e})
+        return json.dumps({"result": "false", "error": e})
 
 
 def get_bluetooth_list(ble_cli_addr):
@@ -76,33 +74,34 @@ def get_bluetooth_list(ble_cli_addr):
         conn = mariadb.connect(**config)
     except mariadb.Error as e:
         print(f"Loi ket noi den MariaDB: {e}")
-        return json.dumps({"result":"false", "error": "không thể kết nối đến db"})
-    
+        return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
+
     cur = conn.cursor()
 
     need_updates = []
-    try: 
+    try:
         cur.execute(
-        "SELECT group_name FROM Device WHERE bluetooth_mac_address=?", (ble_cli_addr,))
+            "SELECT group_name FROM Device WHERE bluetooth_mac_address=?", (ble_cli_addr,))
         ttt = cur.fetchall()
         if len(ttt) <= 0:
             conn.close()
             return need_updates
 
-        group_name_find = ttt[0][0]    
+        group_name_find = ttt[0][0]
         cur.execute(
-                "SELECT bluetooth_mac_address FROM Device WHERE group_name=?", 
-                (group_name_find,))
+            "SELECT bluetooth_mac_address FROM Device WHERE group_name=?",
+            (group_name_find,))
         res = cur.fetchall()
         for x in res:
             if x[0] != ble_cli_addr:
-                need_updates.append(x[0])   
+                need_updates.append(x[0])
 
         return need_updates
 
-    except mariadb.Error as e: 
+    except mariadb.Error as e:
         print(f"Error SQL: {e}")
-        return json.dumps({"result":"false", "error": e})        
+        return json.dumps({"result": "false", "error": e})
+
 
 def get_account_info(account_id):
 
@@ -110,24 +109,23 @@ def get_account_info(account_id):
         conn = mariadb.connect(**config)
     except mariadb.Error as e:
         print(f"Loi ket noi den MariaDB: {e}")
-        return json.dumps({"result":"false", "error": "không thể kết nối đến db"})
-    
+        return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
+
     cur = conn.cursor()
 
-    
-    try: 
+    try:
         cur.execute(
-        "SELECT first_name, last_name FROM Account WHERE account_id=?", (account_id,))
+            "SELECT first_name, last_name FROM Account WHERE account_id=?", (account_id,))
         ttt = cur.fetchall()
         if len(ttt) <= 0:
             conn.close()
-            return json.dumps({"result":"true", "message": "không tìm thấy thông tin với mã QR này"})
+            return json.dumps({"result": "true", "message": "không tìm thấy thông tin với mã QR này"})
 
-        return json.dumps({"result":"true", "message": {
+        return json.dumps({"result": "true", "message": {
             "first_name": ttt[0][0],
             "last_name": ttt[0][1]
-            }})
+        }})
 
-    except mariadb.Error as e: 
+    except mariadb.Error as e:
         print(f"Error SQL: {e}")
-        return json.dumps({"result":"false", "message": e})    
+        return json.dumps({"result": "false", "message": e})
