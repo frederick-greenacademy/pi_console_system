@@ -72,7 +72,7 @@ def scan_qrcode_from_cam(client_socket):
 
         cap = cv2.VideoCapture(0)
         is_valid = True
-
+        founds = None
         while is_valid:
             _, frame = cap.read()
             # frame = imutils.resize(frame, width=1024)
@@ -89,9 +89,10 @@ def scan_qrcode_from_cam(client_socket):
                 bar_code_data = barcode.data.decode("utf-8")
 
                 if bar_code_data != None:
+                    founds = bar_code_data
                     print("Tim thay du lieu trong QR nhu sau:", bar_code_data)
-                    client_socket.send(json.dumps({"command": "qr_scanned", "data": str(bar_code_data)}).encode('utf-8'))
-                    thread.sleep(1)
+                    # client_socket.send(json.dumps({"command": "qr_scanned", "data": str(bar_code_data)}).encode('utf-8'))
+                    # time.sleep(2)
                     is_valid = False
                     break
 
@@ -106,7 +107,7 @@ def scan_qrcode_from_cam(client_socket):
             # Hien thi khung frame khi quet
             cv2.imshow("QRScanner", frame)
             key = cv2.waitKey(1) & 0xFF
-            if key == ord("x") or found != None:
+            if key == ord("x"):
                 is_valid = False
                 break
 
@@ -115,12 +116,16 @@ def scan_qrcode_from_cam(client_socket):
         cap.release()
         cv2.waitKey(1)
         # Gui QR code den may chu
+        if founds != None and is_valid == False:
+            return founds
+        return None
 
     except KeyboardInterrupt:
-        print("[X] cleaning up...")
+        print("[X] cleaning up - L2")
         cv2.destroyWindow('Barcode Scanner')
         cap.release()
         cv2.waitKey(1)
+        return None
 
 
 def scan_ble_nearby():
@@ -235,8 +240,9 @@ class BLEClient:
                             print("Thiết bị của bạn chưa được đăng ký")
 
                 elif choice == '4':
-                    scan_qrcode_from_cam(self.client)
-                    print('')
+                    qr = scan_qrcode_from_cam(self.client)
+                    if qr != None:
+                        print('XXXXXX-XXXX-YYYY', qr)
 
             self.client.close()
         except KeyboardInterrupt as ex:
