@@ -116,7 +116,7 @@ def get_account_info(account_id):
     try:
         print(f"XXXXXXX: {1 + 2}")
         cur.execute(
-            "SELECT first_name, last_name FROM Account WHERE account_id=?", (2,))
+            "SELECT first_name, last_name FROM Account WHERE account_id=?", (account_id,))
         ttt = cur.fetchall()
         if len(ttt) <= 0:
             conn.close()
