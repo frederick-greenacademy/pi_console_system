@@ -2,20 +2,13 @@ import json
 import sys
 import decimal
 import mariadb
-
-config = {
-    'host': '127.0.0.1',
-    'port': 3306,
-    'user': 'pi',
-    'password': 'password',
-    'database': 'pi_iot'
-}
+import service.config_pi_db as cf
 
 
 def is_user_exits_with(user, passwrd, car_id):
 
     try:
-        conn = mariadb.connect(**config)
+        conn = mariadb.connect(**cf.config)
     except mariadb.Error as e:
         print(f"Loi ket noi den MariaDB: {e}")
         return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
