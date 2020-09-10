@@ -1,10 +1,8 @@
-<div class="navbar navbar-dark bg-primary fixed-top">
-  <div class="navbar-nav">
-    <a class="nav-item nav-link" routerLink="/">Trang chủ</a>
-    <!-- <a class="nav-item nav-link" (click)="logout()">Logout</a> -->
-</div>
-</div>
+<nav class="navbar navbar-light bg-light justify-content-between">
+  <a class="nav-item nav-link" routerLink="/">Trang chủ</a>
+  <a class="nav-item nav-link" (click)="logout()" *ngIf="user">Logout</a>
+</nav>
 
-<div class="content" >
+<div class="content">
   <router-outlet></router-outlet>
 </div>
