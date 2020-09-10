@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl, FormGroup, Validators , FormBuilder} from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { first } from 'rxjs/operators';
-
+import { ApiHandlerService } from '../api-handler.service'
+import { from } from 'rxjs';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    // private authenticationService: AuthenticationService,
+    private apiHandler: ApiHandlerService,
     // private alertService: AlertService
   ) {
     // redirect to home if already logged in
@@ -35,10 +36,10 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
-  });
+    });
 
-  // get return url from route parameters or default to '/'
-  this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    // get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // convenience getter for easy access to form fields
@@ -55,6 +56,14 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    this.apiHandler.signin(this.f.username.value, this.f.password.value).pipe(first()).subscribe(data => {
+      console.log('My Data:', data)
+      if (data && data.account_id != undefined) {
+        this.router.navigate(['/home'])
+      } else {
+        alert('Tên đăng nhập và mật khẩu không tìm thấy')
+      }
+    })
     // this.loading = true;
     // this.authenticationService.login(this.f.username.value, this.f.password.value)
     //   .pipe(first())
