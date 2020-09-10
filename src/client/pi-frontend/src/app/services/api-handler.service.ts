@@ -12,9 +12,12 @@ import { Account } from "../models/account";
 
 export class ApiHandlerService {
   signinURL = 'http://192.168.0.101:8000/api/signin'
+  private currentUserSubject: BehaviorSubject<Account>;
+  public currentUser: Observable<Account>;
 
   constructor(private http: HttpClient) {
-
+    this.currentUserSubject = new BehaviorSubject<Account>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUser = this.currentUserSubject.asObservable();
   }
 
   signin(user_name: string, password: string): Observable<Account> {
@@ -31,6 +34,9 @@ export class ApiHandlerService {
           acc.first_name = obj['data'].first_name
           acc.last_name = obj['data'].last_name
           acc.user_name = obj['data'].user_name
+
+          localStorage.setItem('currentUser', JSON.stringify(acc));
+          this.currentUserSubject.next(acc);
           return acc
         }
         return new Account();
@@ -39,5 +45,11 @@ export class ApiHandlerService {
       return new Account();
     }))
   }
+
+  logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+}
 
 }
