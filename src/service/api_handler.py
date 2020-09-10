@@ -31,16 +31,22 @@ def is_user_exits_with(user, passwrd):
 
     try:
         cur.execute(
-            "SELECT account_id FROM Account WHERE user_name=? AND password=?", (user, passwrd))
+            "SELECT account_id, last_name, first_name, user_name FROM Account WHERE user_name=? AND password=?", (user, passwrd))
 
-        ttt = cur.fetchall()
-        if len(ttt) <= 0:
+        result_set = cur.fetchall()
+        if len(result_set) <= 0:
             conn.close()
             return json.dumps({"result": "false", "error": "Không tìm thấy tên tài khoản và mật khẩu này!"})
 
 
         conn.close()
-        return json.dumps({"result": "true", "message": "Mật khẩu của tài khoản này không đúng"})
+        user = {
+            "last_name": result_set[0][1],
+            "first_name": result_set[0][2],
+            "user_name": result_set[0][3],
+            "account_id": result_set[0][0]
+        }
+        return json.dumps({"result": "true", "data": user})
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")
