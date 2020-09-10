@@ -4,6 +4,7 @@ from flask import Flask, request
 import json
 import sys
 import decimal
+from flask_cors import CORS
 
 UPLOAD_FOLDER = 'uploads'
 db_config = {
@@ -17,6 +18,7 @@ db_config = {
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+CORS(app)
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -31,7 +33,7 @@ def is_user_exits_with(user, password):
         conn = mariadb.connect(**db_config)
     except mariadb.Error as e:
         print(f"\n\nLoi ket noi den MariaDB: {e}\n\n")
-        return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
+        return json.dumps({"result": False, "error": "không thể kết nối đến db"})
 
     cur = conn.cursor()
 
@@ -42,7 +44,7 @@ def is_user_exits_with(user, password):
         result_set = cur.fetchall()
         if len(result_set) <= 0:
             conn.close()
-            return json.dumps({"result": "false", "error": "Không tìm thấy tên tài khoản và mật khẩu này!"})
+            return json.dumps({"result": False, "error": "Không tìm thấy tên tài khoản và mật khẩu này!"})
 
 
         conn.close()
@@ -53,11 +55,11 @@ def is_user_exits_with(user, password):
             "user_name": result_set[0][3],
             "account_id": result_set[0][0]
         }
-        return json.dumps({"result": "true", "data": user})
+        return json.dumps({"result": True, "data": user})
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")
-        return json.dumps({"result": "false", "error": e})
+        return json.dumps({"result": False, "error": e})
 
 # Flask API
 @app.route("/")
