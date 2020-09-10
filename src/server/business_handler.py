@@ -1,15 +1,7 @@
-import sqlalchemy as db
 import json
 import sys
 import decimal
 import mariadb
-
-
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://pi:password@127.0.0.1:3306/pi_iot'
-
-# Cau hinh CSDL
-engine = db.create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
-metadata = db.MetaData()
 
 config = {
     'host': '127.0.0.1',

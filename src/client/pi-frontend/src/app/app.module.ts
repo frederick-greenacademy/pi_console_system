@@ -9,7 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { ImageRegisterComponent } from './image-register/image-register.component';
 import { UserHomeComponent } from './login/user-home/user-home.component';
 import { AdminHomeComponent } from './login/admin-home/admin-home.component';
-
+import { HttpClientModule  } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -25,7 +25,8 @@ import { AdminHomeComponent } from './login/admin-home/admin-home.component';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
