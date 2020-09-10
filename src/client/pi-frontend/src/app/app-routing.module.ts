@@ -8,9 +8,11 @@ import { ImageRegisterComponent } from './image-register/image-register.componen
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AdminHomeComponent } from './login/admin-home/admin-home.component';
 import { UserHomeComponent } from './login/user-home/user-home.component'
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   {
     path: 'login', component: LoginComponent,
     children: [

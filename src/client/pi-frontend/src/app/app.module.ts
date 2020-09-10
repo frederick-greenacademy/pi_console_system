@@ -10,6 +10,7 @@ import { ImageRegisterComponent } from './image-register/image-register.componen
 import { UserHomeComponent } from './login/user-home/user-home.component';
 import { AdminHomeComponent } from './login/admin-home/admin-home.component';
 import { HttpClientModule  } from "@angular/common/http";
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { HttpClientModule  } from "@angular/common/http";
     LoginComponent,
     ImageRegisterComponent,
     UserHomeComponent,
-    AdminHomeComponent
+    AdminHomeComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
