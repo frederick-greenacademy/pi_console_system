@@ -23,14 +23,14 @@ export class ApiHandlerService {
     formData.append('password', password);
 
     return this.http.post<Account>(this.signinURL, formData).pipe(map(obj => {
-      console.log('New Obj: ', obj)
+      console.log('Thông tin phản hồi là: ', obj)
       if (obj) {
-        if (obj.result == "true") {
+        if (obj["result"] == "true") {
           var acc = new Account()
-          acc.account_id = obj.data.account_id
-          acc.first_name = obj.data.first_name
-          acc.last_name = obj.data.last_name
-          acc.user_name = obj.data.user_name
+          acc.account_id = obj['data'].account_id
+          acc.first_name = obj['data'].first_name
+          acc.last_name = obj['data'].last_name
+          acc.user_name = obj['data'].user_name
           return acc
         }
         return new Account();
@@ -38,31 +38,6 @@ export class ApiHandlerService {
 
       return new Account();
     }))
-  }
-
-  login(username: string, password: string) {
-    const formData = new FormData();
-    formData.append('user_name', username);
-    formData.append('password', password);
-
-    return this.http.post<any>(this.signinURL, formData)
-      .pipe(map(obj => {
-        // login successful if there's a jwt token in the response
-        console.log('New Obj: ', obj)
-        if (obj) {
-          if (obj.result == "true") {
-            var acc = new Account()
-            acc.account_id = obj.data.account_id
-            acc.first_name = obj.data.first_name
-            acc.last_name = obj.data.last_name
-            acc.user_name = obj.data.user_name
-            return acc
-          }
-          return new Account();
-        }
-
-        return new Account();
-      }));
   }
 
 }
