@@ -19,7 +19,7 @@ class DecimalEncoder(json.JSONEncoder):
             return float(o)
         return super(DecimalEncoder, self).default(o)
 
-def is_user_exits_with(user, passwrd, car_id):
+def is_user_exits_with(user, passwrd):
 
     try:
         conn = mariadb.connect(**config_pi_db.config)
@@ -31,42 +31,22 @@ def is_user_exits_with(user, passwrd, car_id):
 
     try:
         cur.execute(
-            "SELECT account_id, password FROM Account WHERE user_name=?", (user,))
+            "SELECT account_id FROM Account WHERE user_name=? AND password=?", (user, passwrd))
+
         ttt = cur.fetchall()
         if len(ttt) <= 0:
             conn.close()
-            return json.dumps({"result": "false", "error": "Không tìm thấy tên tài khoản này: " + user})
+            return json.dumps({"result": "false", "error": "Không tìm thấy tên tài khoản và mật khẩu này!"})
 
-        account_id_value = None
-        for x in ttt:
-            print(f"U: {x[0]}, P: {x[1]}")
-            if x[1] == passwrd:
-                account_id_value = x[0]
-                break
 
-        if account_id_value != None:
-
-            cur.execute(
-                "SELECT vehicle_id, status FROM Rent WHERE account_id=? and vehicle_id=? and status=?",
-                (account_id_value, car_id, 'thuê'))
-
-            vehicle_id_value = cur.fetchall()
-            conn.close()
-
-            if len(vehicle_id_value) > 0:
-                return json.dumps({"result": "true", "message": "Tìm thấy mã xe của tk: " + user})
-            else:
-                return json.dumps({"result": "false", "error": "Không tìm thấy ma xe: " + car_id})
-
-        else:
-            conn.close()
-            return json.dumps({"result": "false", "error": "Mật khẩu của tài khoản này không đúng"})
+        conn.close()
+        return json.dumps({"result": "true", "message": "Mật khẩu của tài khoản này không đúng"})
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")
         return json.dumps({"result": "false", "error": e})
 
-
+# Flask API
 @app.route("/")
 def main():
     return "chào bạn đến với Hệ thống cơ sở dòng lệnh"
@@ -76,10 +56,10 @@ def main():
 def check_sign_in():
     _user_name = request.form['user_name']
     _password = request.form['password']
-
-
+    # check user_name and password
+    is_user_exits_with(_user_name, _password)
 
 
 
 if __name__ == "__main__":
-    app.run(port=8000)
+    app.run(host='0.0.0.0', port=8000)
