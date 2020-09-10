@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ApiHandlerService } from './api-handler.service';
+import { ApiHandlerService } from './service/api-handler.service';
 
 describe('ApiHandlerService', () => {
   let service: ApiHandlerService;

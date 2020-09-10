@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { ApiHandlerService } from '../api-handler.service'
+import { ApiHandlerService } from '../service/api-handler.service'
 import { from } from 'rxjs';
 @Component({
   selector: 'app-login',
