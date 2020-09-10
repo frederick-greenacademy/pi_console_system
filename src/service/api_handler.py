@@ -1,5 +1,5 @@
 import os
-import sqlalchemy as db
+import mariadb
 from flask import Flask, request
 import json
 import sys
