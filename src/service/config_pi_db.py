@@ -5,3 +5,6 @@ config = {
     'password': 'password',
     'database': 'pi_iot'
 }
+
+def get_config():
+    return config

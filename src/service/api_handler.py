@@ -4,10 +4,15 @@ from flask import Flask, request
 import json
 import sys
 import decimal
-import config_pi_db
 
 UPLOAD_FOLDER = 'uploads'
-
+db_config = {
+    'host': '127.0.0.1',
+    'port': 3306,
+    'user': 'pi',
+    'password': 'password',
+    'database': 'pi_iot'
+}
 
 
 app = Flask(__name__)
@@ -19,19 +24,20 @@ class DecimalEncoder(json.JSONEncoder):
             return float(o)
         return super(DecimalEncoder, self).default(o)
 
-def is_user_exits_with(user, passwrd):
+def is_user_exits_with(user, password):
 
+    # check user_name and password
     try:
-        conn = mariadb.connect(**config_pi_db.config)
+        conn = mariadb.connect(**db_config)
     except mariadb.Error as e:
-        print(f"Loi ket noi den MariaDB: {e}")
+        print(f"\n\nLoi ket noi den MariaDB: {e}\n\n")
         return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
 
     cur = conn.cursor()
 
     try:
         cur.execute(
-            "SELECT account_id, last_name, first_name, user_name FROM Account WHERE user_name=? AND password=?", (user, passwrd))
+            "SELECT account_id, last_name, first_name, user_name FROM Account WHERE user_name=? AND password=?", (user, password))
 
         result_set = cur.fetchall()
         if len(result_set) <= 0:
@@ -40,6 +46,7 @@ def is_user_exits_with(user, passwrd):
 
 
         conn.close()
+        
         user = {
             "last_name": result_set[0][1],
             "first_name": result_set[0][2],
@@ -60,10 +67,10 @@ def main():
 
 @app.route("/api/signin", methods=['POST'])
 def check_sign_in():
-    _user_name = request.form['user_name']
-    _password = request.form['password']
-    # check user_name and password
-    is_user_exits_with(_user_name, _password)
+    user = request.form['user_name']
+    password = request.form['password']
+    return is_user_exits_with(user, password)
+    
 
 
 
