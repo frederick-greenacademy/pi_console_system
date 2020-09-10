@@ -3,6 +3,8 @@ export class Account {
   user_name: string;
   last_name: string;
   first_name: string;
+  password: string;
+  avatars: File[];
 
   constructor(){}
 }

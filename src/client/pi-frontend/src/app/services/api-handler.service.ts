@@ -4,7 +4,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 // import { catchError, retry } from "rxjs/operator";
-import { Account } from "../model/account";
+import { Account } from "../models/account";
 
 @Injectable({
   providedIn: 'root'
