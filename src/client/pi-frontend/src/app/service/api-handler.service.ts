@@ -25,7 +25,7 @@ export class ApiHandlerService {
     return this.http.post<Account>(this.signinURL, formData).pipe(map(obj => {
       console.log('Thông tin phản hồi là: ', obj)
       if (obj) {
-        if (obj["result"] == "true") {
+        if (obj["result"] == true) {
           var acc = new Account()
           acc.account_id = obj['data'].account_id
           acc.first_name = obj['data'].first_name
