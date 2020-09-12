@@ -5,6 +5,7 @@ import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDe
   templateUrl: './image-register.component.html',
   styleUrls: ['./image-register.component.css']
 })
+
 export class ImageRegisterComponent implements OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
@@ -26,7 +27,10 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   };
   mediaStream: MediaStream = null;
 
-  constructor(private renderer: Renderer2, private el: ElementRef) { }
+  constructor(private renderer: Renderer2,
+    private el: ElementRef) {
+
+  }
 
   ngOnInit(): void {
     this.isMobileBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
@@ -34,14 +38,14 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
       this.startCamera()
     }
   }
-  
+
   handleFileInput(files: FileList) {
     //alert(files.item(0))
     // const context2d = this.canvas.nativeElement.getContext('2d');
     // var imageData = context2d.createImageData(files.item(0), this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 
     // context2d.putImageData(imageData, 0, 0);
-    
+
     this.preview(files)
 
   }
@@ -64,8 +68,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   }
 
 
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event: any) {
+  @HostListener('window:popstate', ['$event']) onPopState(event: any) {
     console.log('Back button pressed', event);
   }
 

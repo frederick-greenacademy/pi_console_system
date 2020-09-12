@@ -7,7 +7,8 @@
    <!-- Tham khao: https://developers.google.com/web/fundamentals/media/capturing-images/ -->
    <!-- Su dung cho WebView on iPhone or Android <input type="file" accept="image/*" capture="environment"> -->
 
-
+   <span><h4>Nên chụp ít nhất 6 ảnh để sử dụng cho tính năng</h4></span>
+   <span><h4>nhận diện khuôn mặt về sau</h4></span>
    <video  [hidden]="isMobileBrowser" [ngClass]="isMobileBrowser==true?'display:none !important;':'vid'" muted playsinline #video autoplay></video>
    <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle" [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="capture()">
       Chụp ảnh
