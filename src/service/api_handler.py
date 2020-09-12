@@ -86,9 +86,18 @@ def main():
 @app.route("/upload/files", methods=['POST'])
 def upload_file():
     if request.method == 'POST':
-        for item in request.files:
-            print('Item:', item)
-            
+        number_image_files = request.form['number_image_files']
+        if(number_image_files != None):
+            count = int(number_image_files)
+            for i in range(0, count):
+                file_name = 'file' + i
+                file = request.form[file_name]
+                if file:
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
+                    print('Hoàn tất lưu tệp: ', file_name)
+                    # pass
+        
+
         # if 'files[]' not in request.files:
         #     print('No file part')
         #     return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})

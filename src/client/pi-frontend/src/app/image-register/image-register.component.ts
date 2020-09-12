@@ -194,11 +194,15 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
 
   register() {
     var formData = new FormData()
-    for (let index = 0; index < this.imageDatas.length; index++) {
-      const element = this.imageDatas[index];
-      var fileName = 'file' + index
+    let lengthOfImages = this.imageDatas.length
+    formData.append('number_image_files', lengthOfImages.toString())
+
+    for (let index = 0; index < lengthOfImages; index++) {
+      let element = this.imageDatas[index];
+      let fileName = 'file' + index
       formData.append(fileName, element)
     }
+
     this.serviceHandler.uploadFiles(formData)
   }
 
