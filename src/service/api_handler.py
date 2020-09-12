@@ -12,7 +12,7 @@ path = os.getcwd()
 UPLOAD_FOLDER = os.path.join(path, 'uploads')
 
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -33,7 +33,7 @@ if not os.path.isdir(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #It will allow below 16MB contents only, you can change it
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+# app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 CORS(app)
 
 
@@ -86,18 +86,21 @@ def main():
 @app.route("/upload/files", methods=['POST'])
 def upload_file():
     if request.method == 'POST':
-        if 'files[]' not in request.files:
-            print('No file part')
-            return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
+        for item in request.files:
+            print('Item:', item)
+            
+        # if 'files[]' not in request.files:
+        #     print('No file part')
+        #     return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
 
-        files = request.files.getlist('files[]')
+        # files = request.files.getlist('files[]')
 
-        for file in files:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # for file in files:
+        #     if file and allowed_file(file.filename):
+        #         filename = secure_filename(file.filename)
+        #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        print('File(s) successfully uploaded')
+        # print('File(s) successfully uploaded')
         return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})
 
 @app.route("/api/signin", methods=['POST'])
