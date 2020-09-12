@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
+import { ApiHandlerService } from '../services/api-handler.service';
 
 @Component({
   selector: 'app-image-register',
@@ -35,7 +36,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   mediaStream: MediaStream = null;
 
   constructor(private renderer: Renderer2,
-    private el: ElementRef) {
+    private el: ElementRef, private serviceHandler: ApiHandlerService) {
 
   }
 
@@ -189,6 +190,16 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         break
     }
 
+  }
+
+  register() {
+    var formData = new FormData()
+    for (let index = 0; index < this.imageDatas.length; index++) {
+      const element = this.imageDatas[index];
+      var fileName = 'file' + index
+      formData.append(fileName, element)
+    }
+    this.serviceHandler.uploadFiles(formData)
   }
 
   setNextNumberImage(e: number) {

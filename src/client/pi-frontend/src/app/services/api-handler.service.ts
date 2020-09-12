@@ -11,7 +11,10 @@ import { Account } from "../models/account";
 })
 
 export class ApiHandlerService {
+  // Mô tả url 
   signinURL = 'http://192.168.0.101:8000/api/signin'
+  uploadFileURL = 'http://192.168.0.101:8000/upload/files'
+
   private currentUserSubject: BehaviorSubject<Account>;
   public currentUser: Observable<Account>;
 
@@ -50,6 +53,16 @@ export class ApiHandlerService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-}
+  }
+
+  uploadFiles(formData: FormData) {
+    this.http.post<any>(this.uploadFileURL, formData).subscribe(
+      res => {
+        console.log('Phản hồi của tệp tải lên:', res)
+      },
+      (err) => {
+        console.log('Lỗi khi tải tệp lên:', err)
+      })
+  }
 
 }
