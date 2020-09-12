@@ -84,32 +84,25 @@ def main():
     return "chào bạn đến với Hệ thống cơ sở dòng lệnh"
 
 @app.route("/upload/files", methods=['POST'])
+# @cross_origin(origin='*',headers=['Access-Control-Allow-Origin','*'])
+
 def upload_file():
     if request.method == 'POST':
         number_image_files = request.form['number_image_files']
-        if(number_image_files != None):
-            count = int(number_image_files)
-            for i in range(0, count):
-                file_name = 'file' + i
-                file = request.form[file_name]
-                if file:
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
-                    print('Hoàn tất lưu tệp: ', file_name)
-                    # pass
+        print('So luong anh tai len: ', number_image_files)
         
+        if 'files[]' not in request.files:
+            print('No file part')
+            # return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
 
-        # if 'files[]' not in request.files:
-        #     print('No file part')
-        #     return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
+        files = request.files.getlist('files[]')
 
-        # files = request.files.getlist('files[]')
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # for file in files:
-        #     if file and allowed_file(file.filename):
-        #         filename = secure_filename(file.filename)
-        #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        # print('File(s) successfully uploaded')
+        print('Tải anh lên thành công')
         return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})
 
 @app.route("/api/signin", methods=['POST'])
