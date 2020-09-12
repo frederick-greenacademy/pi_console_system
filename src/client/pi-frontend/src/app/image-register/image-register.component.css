@@ -8,12 +8,11 @@
 }
 
 .vid2 {
-    /* width: 100%;
-    height: 100%; */
-    width: 500px;
-    height: 280px;
-    padding-top: 10px;
-    border: 0;
+    width: 120px;
+    height: 80px;
+    padding: 5px;
+    /* border:1px solid #b9b4b4; */
+    align-content: center;
 }
 
 .btn-circle {
@@ -25,6 +24,36 @@
     font-size: 12px;
     line-height: 1.42857;
 }
+.canvas.selected {
+    background-color: #CFD8DC;
+    color: white;
+}
+.crises.selected:hover {
+    background-color: #6d6d6d;
+}
+
+button {
+    background-color: #eee;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    cursor: hand;
+    font-family: Arial;
+    margin-right: 5px;
+  }
+  
+  button:hover {
+    background-color: #cfd8dc;
+  }
+  
+  button.delete {
+    position: relative;
+    /* left: 194px;
+    top: -32px; */
+    background-color: gray !important;
+    color: white;
+  }
 
 span {
     padding: 2px;

@@ -7,14 +7,41 @@
    <!-- Tham khao: https://developers.google.com/web/fundamentals/media/capturing-images/ -->
    <!-- Su dung cho WebView on iPhone or Android <input type="file" accept="image/*" capture="environment"> -->
 
-   <span><h4>Nên chụp ít nhất 6 ảnh để sử dụng cho tính năng</h4></span>
-   <span><h4>nhận diện khuôn mặt về sau</h4></span>
-   <video  [hidden]="isMobileBrowser" [ngClass]="isMobileBrowser==true?'display:none !important;':'vid'" muted playsinline #video autoplay></video>
-   <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle" [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="capture()">
+   <span>
+      <h4>Nên chụp ít nhất 6 ảnh để sử dụng cho tính năng</h4>
+   </span>
+   <span>
+      <h4>nhận diện khuôn mặt về sau</h4>
+   </span>
+   <div [hidden]="isMobileBrowser" class="d-flex flex-wrap align-items-center" style="height:80px;margin-bottom: 20px;">
+      <button (click)="setNextNumberImage(0)">
+         <canvas [hidden]="isMobileBrowser" #canvas class="vid2"></canvas>
+      </button>
+      <button (click)="setNextNumberImage(1)">
+         <canvas [hidden]="isMobileBrowser" #canvas2 class="vid2"></canvas>
+      </button>
+      <button (click)="setNextNumberImage(2)">
+         <canvas [hidden]="isMobileBrowser" #canvas3 class="vid2"></canvas>
+      </button>
+      <button (click)="setNextNumberImage(3)">
+         <canvas [hidden]="isMobileBrowser" #canvas4 class="vid2"></canvas>
+      </button>
+      <button (click)="setNextNumberImage(4)">
+         <canvas [hidden]="isMobileBrowser" #canvas5 class="vid2"></canvas>
+      </button>
+      <button (click)="setNextNumberImage(5)">
+         <canvas [hidden]="isMobileBrowser" #canvas6 class="vid2"></canvas>
+      </button>
+   </div>
+   <video [hidden]="isMobileBrowser" [ngClass]="isMobileBrowser==true?'display:none !important;':'vid'" muted
+      playsinline #video autoplay></video>
+   <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle"
+      [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="capture()">
       Chụp ảnh
    </button>
 
-   <canvas [hidden]="isMobileBrowser" #canvas class="vid2"></canvas>
+
+
 
    <div *ngIf="isMobileBrowser">
 
@@ -23,7 +50,7 @@
       <input type="file" style="display:none;" id="file-input" name="file-input" accept="image/*" capture="environment"
          (change)="handleFileInput($event.target.files)" />
       <div>Xem trước ảnh</div>
-      
+
    </div>
 
    <div *ngIf="imgURL">
