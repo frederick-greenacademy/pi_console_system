@@ -11,10 +11,6 @@ path = os.getcwd()
 # file Upload
 UPLOAD_FOLDER = os.path.join(path, 'uploads')
 
-# Make directory if "uploads" folder not exists
-if not os.path.isdir(UPLOAD_FOLDER):
-    os.mkdir(UPLOAD_FOLDER)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 def allowed_file(filename):
@@ -30,7 +26,12 @@ db_config = {
 
 
 app = Flask(__name__)
+# Make directory if "uploads" folder not exists
+if not os.path.isdir(UPLOAD_FOLDER):
+    os.mkdir(UPLOAD_FOLDER)
+    
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 #It will allow below 16MB contents only, you can change it
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 CORS(app)
