@@ -56,7 +56,11 @@ export class ApiHandlerService {
   }
 
   uploadFiles(formData: FormData) {
-    this.http.post<any>(this.uploadFileURL, formData).subscribe(
+    var headers = new HttpHeaders()
+    headers.append('Content-Disposition', 'multipart/form-data');
+    headers.append('Access-Control-Allow-Origin', '*');
+    
+    this.http.post<any>(this.uploadFileURL, formData, { headers: headers }).subscribe(
       res => {
         console.log('Phản hồi của tệp tải lên:', res)
       },
