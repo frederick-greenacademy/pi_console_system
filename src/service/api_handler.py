@@ -1,12 +1,25 @@
 import os
-import mariadb
-from flask import Flask, request
 import json
 import sys
+import mariadb
 import decimal
 from flask_cors import CORS
+from flask import Flask, request, flash
+from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = 'uploads'
+path = os.getcwd()
+# file Upload
+UPLOAD_FOLDER = os.path.join(path, 'uploads')
+
+# Make directory if "uploads" folder not exists
+if not os.path.isdir(UPLOAD_FOLDER):
+    os.mkdir(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 db_config = {
     'host': '127.0.0.1',
     'port': 3306,
@@ -18,13 +31,17 @@ db_config = {
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#It will allow below 16MB contents only, you can change it
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 CORS(app)
+
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, decimal.Decimal):
             return float(o)
         return super(DecimalEncoder, self).default(o)
+
 
 def is_user_exits_with(user, password):
 
@@ -46,9 +63,8 @@ def is_user_exits_with(user, password):
             conn.close()
             return json.dumps({"result": False, "error": "Không tìm thấy tên tài khoản và mật khẩu này!"})
 
-
         conn.close()
-        
+
         user = {
             "last_name": result_set[0][1],
             "first_name": result_set[0][2],
@@ -66,15 +82,28 @@ def is_user_exits_with(user, password):
 def main():
     return "chào bạn đến với Hệ thống cơ sở dòng lệnh"
 
+@app.route("/upload/files", methods=['POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'files[]' not in request.files:
+            print('No file part')
+            return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
+
+        files = request.files.getlist('files[]')
+
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        print('File(s) successfully uploaded')
+        return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})
 
 @app.route("/api/signin", methods=['POST'])
 def check_sign_in():
     user = request.form['user_name']
     password = request.form['password']
     return is_user_exits_with(user, password)
-    
-
-
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
