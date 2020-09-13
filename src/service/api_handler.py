@@ -99,7 +99,7 @@ def upload_file():
         for file in files:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                new_filename = str(user_name) + filename 
+                new_filename = str(user_name) + "_" + filename.rsplit('.', 1)[1].lower() 
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
 
         print('Tải anh lên thành công')
@@ -144,7 +144,7 @@ def register():
         print(f"ID vừa đc thêm vào là: {cur.lastrowid}")
             
         conn.close()
-        return json.dumps({"result": True, "data": cur.lastrowid})
+        return json.dumps({"result": True, "data": str(cur.lastrowid)})
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")
