@@ -124,7 +124,7 @@ def register():
 
     try:
         cur.execute(
-            "SELECT account_id FROM Account WHERE user_name=?", (user_name))
+            "SELECT account_id FROM Account WHERE user_name=?", (user_name,))
 
         result_set = cur.fetchall()
         if len(result_set) > 0:
@@ -132,12 +132,13 @@ def register():
             return json.dumps({"result": False, "error": "Tài khoản bạn đăng ký đã tồn tại!"})
 
         try: 
+            role_id = 3
             cur.execute(
-            "INSERT INTO Account(user_name, password, role_id, first_name, last_name) VALUES(?,?,?,?)", (user_name, password, 3, first_name, last_name))
+            "INSERT INTO Account(user_name, password, role_id, first_name, last_name) VALUES(?,?,?,?)", (user_name, password, role_id, first_name, last_name))
         except mariadb.Error as e: 
             print(f"Lỗi thêm mới dữ liệu: {e}")
             conn.close()
-            return json.dumps({"result": False, "error": 'Hệ thống không thể đăng ký với thông tin trên'})
+            return json.dumps({"result": False, "error": 'Ghi danh không thành công!'})
 
         conn.commit() 
         print(f"ID vừa đc thêm vào là: {cur.lastrowid}")

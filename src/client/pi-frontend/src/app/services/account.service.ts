@@ -34,51 +34,7 @@ export class AccountHandler {
     this.enrollInfo = acc
   }
 
-  // register() {
-
-  //   const enrollForm = new FormData()
-  //   enrollForm.append('first_name', this.enrollInfo.first_name)
-  //   enrollForm.append('last_name', this.enrollInfo.last_name)
-  //   enrollForm.append('user_name', this.enrollInfo.user_name)
-  //   enrollForm.append('password', this.enrollInfo.password)
-
-
-  //   this.isLoadingSubject.next(true)
-
-  //   let headers = new HttpHeaders()
-  //   headers.append('Content-Disposition', 'multipart/form-data');
-  //   headers.append('Access-Control-Allow-Origin', '*');
-
-  //   this.http.post<Account>(this.urlForEnrollInfo, enrollForm, { headers: headers }).subscribe(
-  //     obj => {
-  //       console.log('Phản hồi về ghi danh:', obj)
-  //       if (obj["result"] == true) {
-
-  //         let formUploadFiles = new FormData()
-  //         let lengthOfImages = this.capturedImages.length
-  //         formUploadFiles.append('number_image_files', lengthOfImages.toString())
-  //         formUploadFiles.append('user_name', this.enrollInfo.user_name)
-
-  //         for (let index = 0; index < lengthOfImages; index++) {
-  //           formUploadFiles.append('files[]', this.capturedImages[index], 'file' + index + '.jpg')
-  //         }
-  //         this.uploadFiles(formUploadFiles)
-  //       }
-  //       else {
-  //         alert(obj["error"])
-  //       }
-
-  //     },
-  //     (err) => {
-  //       console.log('Lỗi ghi danh:', err)
-  //       alert(err)
-  //       this.isCompleteEnrollSubject.next(false)
-  //       this.isLoadingSubject.next(false)
-  //     })
-
-  // }
-
-  register(): Observable<string> {
+  register() {
 
     const enrollForm = new FormData()
     enrollForm.append('first_name', this.enrollInfo.first_name)
@@ -89,9 +45,12 @@ export class AccountHandler {
 
     this.isLoadingSubject.next(true)
 
-    this.http.post<Account>(this.urlForEnrollInfo, enrollForm).pipe(map(obj => {
-      console.log('Phản hồi về ghi danh:', obj)
-      if (obj) {
+    let headers = new HttpHeaders()
+    headers.append('Access-Control-Allow-Origin', '*');
+
+    this.http.post<Account>(this.urlForEnrollInfo, enrollForm, { headers: headers }).subscribe(
+      obj => {
+        console.log('Phản hồi về ghi danh:', obj)
         if (obj["result"] == true) {
 
           let formUploadFiles = new FormData()
@@ -104,13 +63,53 @@ export class AccountHandler {
           }
           this.uploadFiles(formUploadFiles)
         }
-        return "Đang tải ảnh đăng ký..."
-      }
-      this.isLoadingSubject.next(false)
-      return "Hệ thống không thể ghi danh"
-    }))
+        else {
+          this.isLoadingSubject.next(false)
+          alert(obj["error"])
+        }
+
+      },
+      (err) => {
+        console.log('Lỗi ghi danh:', err)
+        this.isLoadingSubject.next(false)
+        alert(err)
+      })
 
   }
+
+  // register() {
+
+  //   const enrollForm = new FormData()
+  //   enrollForm.append('first_name', this.enrollInfo.first_name)
+  //   enrollForm.append('last_name', this.enrollInfo.last_name)
+  //   enrollForm.append('user_name', this.enrollInfo.user_name)
+  //   enrollForm.append('password', this.enrollInfo.password)
+
+
+  //   this.isLoadingSubject.next(true)
+
+  //   this.http.post<any>(this.urlForEnrollInfo, enrollForm).pipe(map(obj => {
+  //     console.log('Phản hồi về ghi danh:', obj)
+  //     if (obj) {
+  //       if (obj["result"] == true) {
+
+  //         let formUploadFiles = new FormData()
+  //         let lengthOfImages = this.capturedImages.length
+  //         formUploadFiles.append('number_image_files', lengthOfImages.toString())
+  //         formUploadFiles.append('user_name', this.enrollInfo.user_name)
+
+  //         for (let index = 0; index < lengthOfImages; index++) {
+  //           formUploadFiles.append('files[]', this.capturedImages[index], 'file' + index + '.jpg')
+  //         }
+  //         this.uploadFiles(formUploadFiles)
+  //       }
+  //       return "Đang tải ảnh đăng ký..."
+  //     }
+  //     this.isLoadingSubject.next(false)
+  //     return "Hệ thống không thể ghi danh"
+  //   }))
+
+  // }
 
   addCapturedImage(image: File) {
     this.capturedImages.push(image)
