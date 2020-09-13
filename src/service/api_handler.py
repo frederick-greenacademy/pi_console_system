@@ -87,6 +87,7 @@ def main():
 def upload_file():
     if request.method == 'POST':
         number_image_files = request.form['number_image_files']
+        user_name = request.form['user_name']
         print('So luong anh tai len: ', number_image_files)
         
         if 'files[]' not in request.files:
@@ -98,7 +99,8 @@ def upload_file():
         for file in files:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                new_filename = str(user_name) + filename 
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
 
         print('Tải anh lên thành công')
         return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})

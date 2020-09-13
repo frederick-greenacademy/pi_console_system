@@ -46,6 +46,7 @@ export class AccountHandler {
     let formUploadFiles = new FormData()
     let lengthOfImages = this.capturedImages.length
     formUploadFiles.append('number_image_files', lengthOfImages.toString())
+    formUploadFiles.append('user_name', this.enrollInfo.user_name)
 
     for (let index = 0; index < lengthOfImages; index++) {
       formUploadFiles.append('files[]', this.capturedImages[index], 'file' + index + '.jpg')
