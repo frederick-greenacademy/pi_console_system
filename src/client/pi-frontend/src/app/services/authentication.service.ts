@@ -12,7 +12,7 @@ import { Account } from "../models/account";
 
 export class AuthenticationHandler {
   // Mô tả url 
-  urlForSignin = 'http://192.168.0.101:8000/api/signin'
+  private urlForSignin = 'http://192.168.0.101:8000/api/signin'
   urlForUploadFiles = 'http://192.168.0.101:8000/upload/files'
 
   private currentUserSubject: BehaviorSubject<Account>;
@@ -55,18 +55,6 @@ export class AuthenticationHandler {
     this.currentUserSubject.next(null);
   }
 
-  uploadFiles(formData: FormData) {
-    var headers = new HttpHeaders()
-    headers.append('Content-Disposition', 'multipart/form-data');
-    headers.append('Access-Control-Allow-Origin', '*');
-
-    this.http.post<any>(this.urlForUploadFiles, formData, { headers: headers }).subscribe(
-      res => {
-        console.log('Phản hồi của tệp tải lên:', res)
-      },
-      (err) => {
-        console.log('Lỗi khi tải tệp lên:', err)
-      })
-  }
+  
 
 }
