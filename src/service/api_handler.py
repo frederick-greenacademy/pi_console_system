@@ -103,8 +103,8 @@ def upload_file():
         for file in files:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                new_filename = str(user_name) + "_" + \
-                    filename.rsplit('.', 1)[1].lower()
+                new_filename = str(user_name) + "_" + filename.lower()
+                    
                 file.save(os.path.join(
                     app.config['UPLOAD_FOLDER'], new_filename))
 
