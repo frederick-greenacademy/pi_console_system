@@ -84,8 +84,6 @@ def main():
     return "chào bạn đến với Hệ thống cơ sở dòng lệnh"
 
 @app.route("/upload/files", methods=['POST'])
-# @cross_origin(origin='*',headers=['Access-Control-Allow-Origin','*'])
-
 def upload_file():
     if request.method == 'POST':
         number_image_files = request.form['number_image_files']
@@ -104,6 +102,51 @@ def upload_file():
 
         print('Tải anh lên thành công')
         return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})
+
+
+@app.route('api/register', methods=['POST'])
+def register():
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    user_name = request.form['user_name']
+    password = request.form['password']
+
+    # kiểm tra xem có tồn tại tài khoản chuẩn bị thêm vào
+    try:
+        conn = mariadb.connect(**db_config)
+    except mariadb.Error as e:
+        print(f"\n\nLoi ket noi den MariaDB: {e}\n\n")
+        return json.dumps({"result": False, "error": "không thể kết nối đến db"})
+
+    cur = conn.cursor()
+
+    try:
+        cur.execute(
+            "SELECT account_id FROM Account WHERE user_name=?", (user_name))
+
+        result_set = cur.fetchall()
+        if len(result_set) > 0:
+            conn.close()
+            return json.dumps({"result": False, "error": "Tài khoản bạn đăng ký đã tồn tại!"})
+
+        try: 
+            cur.execute(
+            "INSERT INTO Account(user_name, password, role_id, first_name, last_name) VALUES(?,?,?,?)", (user_name, password, 3, first_name, last_name))
+        except mariadb.Error as e: 
+            print(f"Lỗi thêm mới dữ liệu: {e}")
+            conn.close()
+            return json.dumps({"result": False, "error": 'Hệ thống không thể đăng ký với thông tin trên'})
+
+        conn.commit() 
+        print(f"ID vừa đc thêm vào là: {cur.lastrowid}")
+            
+        conn.close()
+        return json.dumps({"result": True, "data": cur.lastrowid})
+
+    except mariadb.Error as e:
+        print(f"Error SQL: {e}")
+        return json.dumps({"result": False, "error": e})
+
 
 @app.route("/api/signin", methods=['POST'])
 def check_sign_in():

@@ -12,6 +12,8 @@ import { Account } from '../models/account'
 export class AccountHandler {
 
   private urlForUploadFiles = 'http://192.168.0.101:8000/upload/files'
+  private urlForEnrollInfo = 'http://192.168.0.101:8000/api/register'
+
   private isCompleteEnrollSubject: BehaviorSubject<boolean>;
   public isCompleteEnroll: Observable<boolean>;
   private isLoadingSubject: BehaviorSubject<boolean>;
@@ -34,6 +36,13 @@ export class AccountHandler {
   }
 
   register() {
+
+    let enrollForm = new FormData()
+    enrollForm.append('first_name', this.enrollInfo.first_name)
+    enrollForm.append('last_name', this.enrollInfo.last_name)
+    enrollForm.append('user_name', this.enrollInfo.user_name)
+    enrollForm.append('password', this.enrollInfo.password)
+
     let formUploadFiles = new FormData()
     let lengthOfImages = this.capturedImages.length
     formUploadFiles.append('number_image_files', lengthOfImages.toString())
