@@ -104,7 +104,7 @@ def upload_file():
         return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})
 
 
-@app.route('api/register', methods=['POST'])
+@app.route('/api/register', methods=['POST'])
 def register():
     first_name = request.form['first_name']
     last_name = request.form['last_name']
