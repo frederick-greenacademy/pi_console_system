@@ -134,7 +134,7 @@ def register():
         try: 
             role_id = 3
             cur.execute(
-            "INSERT INTO Account(user_name, password, role_id, first_name, last_name) VALUES(?,?,?,?)", (user_name, password, role_id, first_name, last_name))
+            "INSERT INTO Account(user_name, password, role_id, first_name, last_name) VALUES(?,?,?,?,?)", (user_name, password, role_id, first_name, last_name))
         except mariadb.Error as e: 
             print(f"Lỗi thêm mới dữ liệu: {e}")
             conn.close()
