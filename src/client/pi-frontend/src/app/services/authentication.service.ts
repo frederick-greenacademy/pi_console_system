@@ -13,7 +13,6 @@ import { Account } from "../models/account";
 export class AuthenticationHandler {
   // Mô tả url 
   private urlForSignin = 'http://192.168.0.101:8000/api/signin'
-  urlForUploadFiles = 'http://192.168.0.101:8000/upload/files'
 
   private currentUserSubject: BehaviorSubject<Account>;
   public currentUser: Observable<Account>;
@@ -41,7 +40,10 @@ export class AuthenticationHandler {
           localStorage.setItem('currentUser', JSON.stringify(acc));
           this.currentUserSubject.next(acc);
           return acc
+        } else {
+          alert(obj['error'])
         }
+
         return new Account();
       }
 

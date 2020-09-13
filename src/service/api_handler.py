@@ -76,7 +76,7 @@ def is_user_exits_with(user, password):
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")
-        return json.dumps({"result": False, "error": e})
+        return json.dumps({"result": False, "error": "Không thể truy vấn csdl"})
 
 # Flask API
 @app.route("/")
@@ -147,7 +147,7 @@ def register():
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")
-        return json.dumps({"result": False, "error": e})
+        return json.dumps({"result": False, "error": "Không thể truy vấn csdl"})
 
 
 @app.route("/api/signin", methods=['POST'])

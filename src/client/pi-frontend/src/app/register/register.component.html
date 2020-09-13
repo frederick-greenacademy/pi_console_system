@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-between">
-    <h2>Thông tin đăng ký</h2>
-    <button (click)="register()" *ngIf="isCompleteEnroll" class="bg-primary text-white" >Hoàn tất đăng ký</button>
+    <h2>Thông tin Ghi Danh</h2>
+    <button (click)="register()" *ngIf="isCompleteEnroll" class="bg-primary text-white" >Hoàn tất Ghi danh</button>
 </div>
 <router-outlet></router-outlet>
 <form *ngIf="!isFinishedForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
