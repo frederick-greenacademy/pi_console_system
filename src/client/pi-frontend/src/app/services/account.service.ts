@@ -77,39 +77,10 @@ export class AccountHandler {
 
   }
 
-  // register() {
-
-  //   const enrollForm = new FormData()
-  //   enrollForm.append('first_name', this.enrollInfo.first_name)
-  //   enrollForm.append('last_name', this.enrollInfo.last_name)
-  //   enrollForm.append('user_name', this.enrollInfo.user_name)
-  //   enrollForm.append('password', this.enrollInfo.password)
-
-
-  //   this.isLoadingSubject.next(true)
-
-  //   this.http.post<any>(this.urlForEnrollInfo, enrollForm).pipe(map(obj => {
-  //     console.log('Phản hồi về ghi danh:', obj)
-  //     if (obj) {
-  //       if (obj["result"] == true) {
-
-  //         let formUploadFiles = new FormData()
-  //         let lengthOfImages = this.capturedImages.length
-  //         formUploadFiles.append('number_image_files', lengthOfImages.toString())
-  //         formUploadFiles.append('user_name', this.enrollInfo.user_name)
-
-  //         for (let index = 0; index < lengthOfImages; index++) {
-  //           formUploadFiles.append('files[]', this.capturedImages[index], 'file' + index + '.jpg')
-  //         }
-  //         this.uploadFiles(formUploadFiles)
-  //       }
-  //       return "Đang tải ảnh đăng ký..."
-  //     }
-  //     this.isLoadingSubject.next(false)
-  //     return "Hệ thống không thể ghi danh"
-  //   }))
-
-  // }
+  hideCompleteEnroll(status: boolean) {
+    this.isCompleteEnrollSubject.next(status)
+    this.capturedImages = []
+  }
 
   addCapturedImage(image: File) {
     this.capturedImages.push(image)

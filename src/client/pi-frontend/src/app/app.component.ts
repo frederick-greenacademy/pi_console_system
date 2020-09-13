@@ -13,7 +13,8 @@ import { from } from 'rxjs';
 export class AppComponent {
 
   title = 'pi-frontend';
-  user: Account
+  user: Account = null
+  
   constructor(
     private router: Router,
     private authenHandler: AuthenticationHandler
@@ -23,6 +24,7 @@ export class AppComponent {
         this.user = u
         this.router.navigate(['/home']);
       } else {
+        this.user = null
         this.router.navigate(['/login']);
       }
     })
@@ -30,6 +32,6 @@ export class AppComponent {
 
   logout() {
     this.authenHandler.logout()
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 } 

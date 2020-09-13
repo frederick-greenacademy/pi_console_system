@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
 import { AccountHandler } from '../services/account.service';
 import { AuthenticationHandler } from '../services/authentication.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-image-register',
@@ -41,10 +42,11 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private el: ElementRef,
     private serviceHandler: AuthenticationHandler,
-    private accountHandler: AccountHandler) {
-      this.accountHandler.isLoading.subscribe(nxt => {
-        this.isLoading = nxt
-      })
+    private accountHandler: AccountHandler,
+    private location: Location) {
+    this.accountHandler.isLoading.subscribe(nxt => {
+      this.isLoading = nxt
+    })
   }
 
   ngOnInit(): void {
@@ -113,7 +115,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
         this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
         // var imageData: ImageData = this.canvas.nativeElement.getContext('2d').getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-        
+
         var imageBase64 = this.canvas.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 1;
@@ -227,5 +229,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.stopMediaTracks();
+    // this.location.back()
+    this.accountHandler.hideCompleteEnroll(false)
   }
 }
