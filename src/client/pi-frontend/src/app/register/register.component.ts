@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HostListener } from '@angular/core';
 import { first } from 'rxjs/operators';
+import { AuthenticationHandler } from '../services/authentication.service';
 
 
 @Component({
@@ -20,21 +21,18 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
-    // private authenticationService: AuthenticationService,
-    // private userService: UserService,
-    // private alertService: AlertService
+    private route: ActivatedRoute,
+    private athenHandler: AuthenticationHandler
   ) {
-    // redirect to home if already logged in
-    // if (this.authenticationService.currentUserValue) {
+    // // điều hướng về trang nguồn nếu chưa có thông tin đăng nhập
+    // if (this.athenHandler.currentUser) {
     //   this.router.navigate(['/']);
     // }
 
   }
 
   @HostListener('window:popstate', ['$event'])
-  onPopState(event) {
-    console.log('Back button pressed', event);
+  onPopState(event: any) {
     this.isFinishedForm = false;
     this.router.navigate(['../'])
   }
@@ -48,16 +46,15 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  // convenience getter for easy access to form fields
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
-    // this.submitted = true;
+    this.submitted = true;
 
-    // // stop here if form is invalid
-    // if (this.registerForm.invalid) {
-    //   return;
-    // }
+    // dừng tại đây nếu Biểu mẫu điền chưa được thẩm định
+    if (this.registerForm.invalid) {
+      return;
+    }
     this.isFinishedForm = true;
     this.router.navigate(['register/image'])
   }

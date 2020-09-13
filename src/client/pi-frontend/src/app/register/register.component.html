@@ -5,14 +5,14 @@
         <label for="firstName">Tên</label>
         <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
         <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+            <div *ngIf="f.firstName.errors.required">Tên tài khoản là bắt buộc</div>
         </div>
     </div>
     <div class="form-group">
         <label for="lastName">Họ và tên đệm</label>
         <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
         <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-            <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+            <div *ngIf="f.lastName.errors.required">Họ và Tên đệm là bắt buộc</div>
         </div>
     </div>
     <div class="form-group">

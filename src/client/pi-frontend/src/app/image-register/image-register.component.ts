@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
-import { ApiHandlerService } from '../services/api-handler.service';
+import { AuthenticationHandler } from '../services/authentication.service';
 
 @Component({
   selector: 'app-image-register',
@@ -35,8 +35,10 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   };
   mediaStream: MediaStream = null;
 
-  constructor(private renderer: Renderer2,
-    private el: ElementRef, private serviceHandler: ApiHandlerService) {
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private serviceHandler: AuthenticationHandler) {
 
   }
 
@@ -48,14 +50,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   }
 
   handleFileInput(files: FileList) {
-    //alert(files.item(0))
-    // const context2d = this.canvas.nativeElement.getContext('2d');
-    // var imageData = context2d.createImageData(files.item(0), this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-
-    // context2d.putImageData(imageData, 0, 0);
-
     this.preview(files)
-
   }
 
   preview(files: any) {
@@ -64,7 +59,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
 
     var mimeType = files[0].type;
     if (mimeType.match(/image\/*/) == null) {
-      // this.message = "Only images are supported.";
+      // chỉ hỗ trợ cho tệp là loại ảnh
       return;
     }
 
@@ -75,9 +70,8 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-
   @HostListener('window:popstate', ['$event']) onPopState(event: any) {
-    console.log('Back button pressed', event);
+    console.log('Nhấn quay lại với sự kiện:', event);
   }
 
   startCamera() {
@@ -93,13 +87,13 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleError(error) {
-    console.log('Error: ', error);
+  handleError(error: any) {
+    console.log('Có lỗi: ', error);
   }
 
   attachVideo(stream: any) {
     this.mediaStream = stream;
-    console.log('Stream info: ', stream)
+    console.log('Thông tin một dòng chảy hình ảnh/âm thanh: ', stream)
     this.renderer.setProperty(this.videoElement.nativeElement, 'srcObject', stream);
     this.renderer.listen(this.videoElement.nativeElement, 'play', (event) => {
       this.videoHeight = this.videoElement.nativeElement.videoHeight;
@@ -113,8 +107,8 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         this.renderer.setProperty(this.canvas.nativeElement, 'width', this.videoWidth);
         this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
         this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-        // var imageData: ImageData = null;
-        // imageData = this.canvas.nativeElement.getContext('2d').getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+        // var imageData: ImageData = this.canvas.nativeElement.getContext('2d').getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+        
         var imageBase64 = this.canvas.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 1;
@@ -195,17 +189,17 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
 
   dataURItoBlob(dataURI: any) {
 
-    // convert base64/URLEncoded data component to raw binary data held in a string
+    // chuyển đổi phần dữ liệu base64/URLEncoded đến dữ liệu nhị phân nắm giữ trong chuỗi
     var byteString: any;
     if (dataURI.split(',')[0].indexOf('base64') >= 0)
       byteString = atob(dataURI.split(',')[1]);
     else
       byteString = unescape(dataURI.split(',')[1]);
 
-    // separate out the mime component
+    // tách ra các phần để lấy đôi của ảnh như là .jpg hay .png
     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
-    // write the bytes of the string to a typed array
+    // ghi các bytes của chuỗi đến loại mảng kiểu Uint8Array
     var ia = new Uint8Array(byteString.length);
     for (var i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
@@ -222,7 +216,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     for (let index = 0; index < lengthOfImages; index++) {
       formData.append('files[]', this.imageDatas[index], 'file' + index + '.jpg')
     }
-    
+
     this.serviceHandler.uploadFiles(formData)
   }
 
@@ -232,7 +226,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   private stopMediaTracks() {
 
     if (this.mediaStream && this.mediaStream.getTracks) {
-      // getTracks() returns all media tracks (video+audio)
+      // lặp lại tìm kiếm các bản ghi để tắt chúng đi
       this.mediaStream.getTracks()
         .forEach((track: MediaStreamTrack) => track.stop());
     }

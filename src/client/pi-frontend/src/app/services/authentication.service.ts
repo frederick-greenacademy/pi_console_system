@@ -10,10 +10,10 @@ import { Account } from "../models/account";
   providedIn: 'root'
 })
 
-export class ApiHandlerService {
+export class AuthenticationHandler {
   // Mô tả url 
-  signinURL = 'http://192.168.0.101:8000/api/signin'
-  uploadFileURL = 'http://192.168.0.101:8000/upload/files'
+  urlForSignin = 'http://192.168.0.101:8000/api/signin'
+  urlForUploadFiles = 'http://192.168.0.101:8000/upload/files'
 
   private currentUserSubject: BehaviorSubject<Account>;
   public currentUser: Observable<Account>;
@@ -28,7 +28,7 @@ export class ApiHandlerService {
     formData.append('user_name', user_name);
     formData.append('password', password);
 
-    return this.http.post<Account>(this.signinURL, formData).pipe(map(obj => {
+    return this.http.post<Account>(this.urlForSignin, formData).pipe(map(obj => {
       console.log('Thông tin phản hồi là: ', obj)
       if (obj) {
         if (obj["result"] == true) {
@@ -59,8 +59,8 @@ export class ApiHandlerService {
     var headers = new HttpHeaders()
     headers.append('Content-Disposition', 'multipart/form-data');
     headers.append('Access-Control-Allow-Origin', '*');
-    
-    this.http.post<any>(this.uploadFileURL, formData, { headers: headers }).subscribe(
+
+    this.http.post<any>(this.urlForUploadFiles, formData, { headers: headers }).subscribe(
       res => {
         console.log('Phản hồi của tệp tải lên:', res)
       },

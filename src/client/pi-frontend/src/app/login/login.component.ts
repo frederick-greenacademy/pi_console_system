@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { first } from 'rxjs/operators';
-import { ApiHandlerService } from '../services/api-handler.service'
-import { from } from 'rxjs';
+import { AuthenticationHandler } from '../services/authentication.service'
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -22,41 +22,31 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private apiHandler: ApiHandlerService,
-    // private alertService: AlertService
+    private authenHandler: AuthenticationHandler,
   ) {
-    // redirect to home if already logged in
-    // if (this.authenticationService.currentUserValue) {
-    //   this.router.navigate(['/']);
-    // }
+    
   }
 
   ngOnInit() {
 
+    // đòi hỏi thẩm định các ô nhập liệu
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-
-    // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  // convenience getter for easy access to form fields
+  // dễ dàng truy cập các ô nhập liệu với một getter
   get f() { return this.loginForm.controls; }
 
   onSubmit() {
     this.submitted = true;
 
-    // reset alerts on submit
-    // this.alertService.clear();
-
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
 
-    this.apiHandler.signin(this.f.username.value, this.f.password.value).pipe(first()).subscribe(data => {
+    this.authenHandler.signin(this.f.username.value, this.f.password.value).pipe(first()).subscribe(data => {
       console.log('My Data:', data)
       if (data && data.account_id != undefined) {
         this.router.navigate(['/home'])
@@ -64,17 +54,7 @@ export class LoginComponent implements OnInit {
         alert('Tên đăng nhập và mật khẩu không tìm thấy')
       }
     })
-    // this.loading = true;
-    // this.authenticationService.login(this.f.username.value, this.f.password.value)
-    //   .pipe(first())
-    //   .subscribe(
-    //     data => {
-    //       this.router.navigate([this.returnUrl]);
-    //     },
-    //     error => {
-    //       this.alertService.error(error);
-    //       this.loading = false;
-    //     });
+    
   }
 
 }

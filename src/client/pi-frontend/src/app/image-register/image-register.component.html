@@ -33,7 +33,7 @@
          <canvas [hidden]="isMobileBrowser" #canvas6 class="vid2"></canvas>
       </button>
    </div>
-   
+
    <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle"
       [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="capture()">
       Chụp ảnh

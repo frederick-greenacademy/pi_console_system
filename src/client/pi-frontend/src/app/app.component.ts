@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { ApiHandlerService } from './services/api-handler.service';
-import {Account} from './models/account'
+import { AuthenticationHandler } from './services/authentication.service';
+import { Account } from './models/account'
 import { from } from 'rxjs';
 
 @Component({
@@ -16,10 +16,10 @@ export class AppComponent {
   user: Account
   constructor(
     private router: Router,
-    private apiHandler: ApiHandlerService
+    private authenHandler: AuthenticationHandler
   ) {
-    this.apiHandler.currentUser.subscribe( u => {
-      if(u) {
+    this.authenHandler.currentUser.subscribe(u => {
+      if (u) {
         this.user = u
         this.router.navigate(['/home']);
       } else {
@@ -29,7 +29,7 @@ export class AppComponent {
   }
 
   logout() {
-    this.apiHandler.logout()
+    this.authenHandler.logout()
     this.router.navigate(['/login']);
   }
 } 
