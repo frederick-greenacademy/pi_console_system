@@ -14,7 +14,7 @@ export class AppComponent {
 
   title = 'pi-frontend';
   user: Account = null
-  
+
   constructor(
     private router: Router,
     private authenHandler: AuthenticationHandler
@@ -32,6 +32,5 @@ export class AppComponent {
 
   logout() {
     this.authenHandler.logout()
-    this.router.navigate(['/']);
   }
 } 
