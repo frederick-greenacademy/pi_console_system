@@ -111,87 +111,53 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   capture() {
     switch (this.nextNumberImage) {
       case 0:
-        this.renderer.setProperty(this.canvas.nativeElement, 'width', this.videoWidth);
-        this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
-        this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-        // var imageData: ImageData = this.canvas.nativeElement.getContext('2d').getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-
-        var imageBase64 = this.canvas.nativeElement.toDataURL('image/jpeg')
-        if (imageBase64) {
+        // // var imageData: ImageData = this.canvas.nativeElement.getContext('2d').getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+        if (this.processCaptureAndConvertImage(this.canvas.nativeElement)) {
           this.nextNumberImage = 1;
-          let xBlob = this.dataURItoBlob(imageBase64)
-          let imageFile = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.accountHandler.addCapturedImage(imageFile)
         }
-
         break
       case 1:
-        this.renderer.setProperty(this.canvas2.nativeElement, 'width', this.videoWidth);
-        this.renderer.setProperty(this.canvas2.nativeElement, 'height', this.videoHeight);
-        this.canvas2.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-
-        var imageBase64 = this.canvas2.nativeElement.toDataURL('image/jpeg')
-        if (imageBase64) {
+        if (this.processCaptureAndConvertImage(this.canvas2.nativeElement)) {
           this.nextNumberImage = 2;
-          let xBlob = this.dataURItoBlob(imageBase64)
-          let imageFile = new File([xBlob], "file1.jpeg", { type: "'image/jpeg'" })
-          this.accountHandler.addCapturedImage(imageFile)
         }
         break
       case 2:
-        this.renderer.setProperty(this.canvas3.nativeElement, 'width', this.videoWidth);
-        this.renderer.setProperty(this.canvas3.nativeElement, 'height', this.videoHeight);
-        this.canvas3.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-
-        var imageBase64 = this.canvas3.nativeElement.toDataURL('image/jpeg')
-        if (imageBase64) {
+        if (this.processCaptureAndConvertImage(this.canvas3.nativeElement)) {
           this.nextNumberImage = 3;
-          let xBlob = this.dataURItoBlob(imageBase64)
-          let imageFile = new File([xBlob], "file2.jpeg", { type: "'image/jpeg'" })
-          this.accountHandler.addCapturedImage(imageFile)
         }
-
         break
       case 3:
-        this.renderer.setProperty(this.canvas4.nativeElement, 'width', this.videoWidth);
-        this.renderer.setProperty(this.canvas4.nativeElement, 'height', this.videoHeight);
-        this.canvas4.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-        var imageBase64 = this.canvas4.nativeElement.toDataURL('image/jpeg')
-        if (imageBase64) {
+        if (this.processCaptureAndConvertImage(this.canvas4.nativeElement)) {
           this.nextNumberImage = 4;
-          let xBlob = this.dataURItoBlob(imageBase64)
-          let imageFile = new File([xBlob], "file3.jpeg", { type: "'image/jpeg'" })
-          this.accountHandler.addCapturedImage(imageFile)
         }
         break
       case 4:
-        this.renderer.setProperty(this.canvas5.nativeElement, 'width', this.videoWidth);
-        this.renderer.setProperty(this.canvas5.nativeElement, 'height', this.videoHeight);
-        this.canvas5.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-
-        var imageBase64 = this.canvas5.nativeElement.toDataURL('image/jpeg')
-        if (imageBase64) {
+        if (this.processCaptureAndConvertImage(this.canvas5.nativeElement)) {
           this.nextNumberImage = 5;
-          let xBlob = this.dataURItoBlob(imageBase64)
-          let imageFile = new File([xBlob], "file4.jpeg", { type: "'image/jpeg'" })
-          this.accountHandler.addCapturedImage(imageFile)
         }
         break
       case 5:
-        this.renderer.setProperty(this.canvas6.nativeElement, 'width', this.videoWidth);
-        this.renderer.setProperty(this.canvas6.nativeElement, 'height', this.videoHeight);
-        this.canvas6.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-
-        var imageBase64 = this.canvas6.nativeElement.toDataURL('image/jpeg')
-        if (imageBase64) {
+        if (this.processCaptureAndConvertImage(this.canvas6.nativeElement)) {
           this.nextNumberImage = 1;
-          let xBlob = this.dataURItoBlob(imageBase64)
-          let imageFile = new File([xBlob], "file5.jpeg", { type: "'image/jpeg'" })
-          this.accountHandler.addCapturedImage(imageFile)
         }
         break
     }
 
+  }
+
+  processCaptureAndConvertImage(canvasElement: any) {
+    this.renderer.setProperty(canvasElement, 'width', this.videoWidth);
+    this.renderer.setProperty(canvasElement, 'height', this.videoHeight);
+    canvasElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
+
+    var imageBase64 = canvasElement.toDataURL('image/jpeg')
+    if (imageBase64) {
+      let xBlob = this.dataURItoBlob(imageBase64)
+      let imageFile = new File([xBlob], "file.jpeg")
+      this.accountHandler.addCapturedImage(imageFile)
+      return true
+    }
+    return false
   }
 
   dataURItoBlob(dataURI: any) {
