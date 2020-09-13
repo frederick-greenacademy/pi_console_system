@@ -23,6 +23,7 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   imgURL: any
   imageDatas: File[] = []
   nextNumberImage: number = 0
+  isLoading: boolean
 
 
   constraints = {
@@ -41,7 +42,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     private el: ElementRef,
     private serviceHandler: AuthenticationHandler,
     private accountHandler: AccountHandler) {
-
+      this.accountHandler.isLoading.subscribe(nxt => {
+        this.isLoading = nxt
+      })
   }
 
   ngOnInit(): void {

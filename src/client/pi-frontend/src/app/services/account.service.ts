@@ -14,6 +14,8 @@ export class AccountHandler {
   private urlForUploadFiles = 'http://192.168.0.101:8000/upload/files'
   private isCompleteEnrollSubject: BehaviorSubject<boolean>;
   public isCompleteEnroll: Observable<boolean>;
+  private isLoadingSubject: BehaviorSubject<boolean>;
+  public isLoading: Observable<boolean>;
 
   enrollInfo: Account
   capturedImages: File[] = []
@@ -22,6 +24,8 @@ export class AccountHandler {
     private http: HttpClient) {
       this.isCompleteEnrollSubject = new BehaviorSubject(false)
       this.isCompleteEnroll = this.isCompleteEnrollSubject.asObservable()
+      this.isLoadingSubject = new BehaviorSubject(false)
+      this.isLoading = this.isLoadingSubject.asObservable()
 
   }
 
@@ -53,12 +57,16 @@ export class AccountHandler {
     headers.append('Content-Disposition', 'multipart/form-data');
     headers.append('Access-Control-Allow-Origin', '*');
     
+    this.isLoadingSubject.next(true)
+
     this.http.post<any>(this.urlForUploadFiles, formUploadFiles, { headers: headers }).subscribe(
       res => {
         console.log('Phản hồi của tệp tải lên:', res)
+        this.isLoadingSubject.next(false)
       },
       (err) => {
         console.log('Lỗi khi tải tệp lên:', err)
+        this.isLoadingSubject.next(false)
       })
   }
 }

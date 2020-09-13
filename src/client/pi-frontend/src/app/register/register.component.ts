@@ -56,21 +56,21 @@ export class RegisterComponent implements OnInit {
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
-    this.submitted = true;
+    // this.submitted = true;
 
-    // dừng tại đây nếu Biểu mẫu điền chưa được thẩm định
-    if (this.registerForm.invalid) {
-      return;
-    }
+    // // dừng tại đây nếu Biểu mẫu điền chưa được thẩm định
+    // if (this.registerForm.invalid) {
+    //   return;
+    // }
     this.isFinishedForm = true;
 
-    let enroll = new Account()
-    enroll.user_name = this.f.username.value
-    enroll.first_name = this.f.firstName.value
-    enroll.last_name = this.f.lastName.value
-    enroll.password = this.f.password.value
+    // let enroll = new Account()
+    // enroll.user_name = this.f.username.value
+    // enroll.first_name = this.f.firstName.value
+    // enroll.last_name = this.f.lastName.value
+    // enroll.password = this.f.password.value
     
-    this.accountHandler.enroll(enroll)
+    // this.accountHandler.enroll(enroll)
     // đến trang tiếp
     this.router.navigate(['register/image'])
   }
@@ -78,5 +78,5 @@ export class RegisterComponent implements OnInit {
   register() {
     this.accountHandler.register()
   }
-  
+
 }
