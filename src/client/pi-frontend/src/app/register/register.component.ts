@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HostListener } from '@angular/core';
 import { first } from 'rxjs/operators';
 import { AuthenticationHandler } from '../services/authentication.service';
-
+import { AccountHandler } from '../services/account.service'
+import { Account } from '../models/account';
 
 @Component({
   selector: 'app-register',
@@ -13,6 +14,7 @@ import { AuthenticationHandler } from '../services/authentication.service';
 })
 export class RegisterComponent implements OnInit {
 
+  isCompleteEnroll = false
   registerForm: FormGroup;
   loading = false;
   submitted = false;
@@ -22,12 +24,16 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private athenHandler: AuthenticationHandler
+    private authenHandler: AuthenticationHandler,
+    private accountHandler: AccountHandler
   ) {
     // // điều hướng về trang nguồn nếu chưa có thông tin đăng nhập
-    // if (this.athenHandler.currentUser) {
+    // if (this.authenHandler.currentUser) {
     //   this.router.navigate(['/']);
     // }
+    this.accountHandler.isCompleteEnroll.subscribe(nxt => {
+      this.isCompleteEnroll = nxt
+    })
 
   }
 
@@ -44,6 +50,7 @@ export class RegisterComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
   }
 
   get f() { return this.registerForm.controls; }
@@ -56,7 +63,20 @@ export class RegisterComponent implements OnInit {
       return;
     }
     this.isFinishedForm = true;
+
+    let enroll = new Account()
+    enroll.user_name = this.f.username.value
+    enroll.first_name = this.f.firstName.value
+    enroll.last_name = this.f.lastName.value
+    enroll.password = this.f.password.value
+    
+    this.accountHandler.enroll(enroll)
+    // đến trang tiếp
     this.router.navigate(['register/image'])
   }
 
+  register() {
+    this.accountHandler.register()
+  }
+  
 }

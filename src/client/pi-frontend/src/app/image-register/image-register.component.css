@@ -29,19 +29,19 @@ button {
     cursor: hand;
     font-family: Arial;
     margin-right: 5px;
-  }
+}
   
-  button:hover {
-    background-color: #cfd8dc;
-  }
-  
-  button.delete {
-    position: relative;
-    /* left: 194px;
-    top: -32px; */
-    background-color: gray !important;
-    color: white;
-  }
+button:hover {
+  background-color: #4da2c7;
+}
+
+button.delete {
+  position: relative;
+  /* left: 194px;
+  top: -32px; */
+  background-color: rgb(212, 212, 212) !important;
+  color: white;
+}
 
 span {
     padding: 1px;

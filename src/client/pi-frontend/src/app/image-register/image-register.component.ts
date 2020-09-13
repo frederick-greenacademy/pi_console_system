@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
+import { AccountHandler } from '../services/account.service';
 import { AuthenticationHandler } from '../services/authentication.service';
 
 @Component({
@@ -38,7 +39,8 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
-    private serviceHandler: AuthenticationHandler) {
+    private serviceHandler: AuthenticationHandler,
+    private accountHandler: AccountHandler) {
 
   }
 
@@ -112,9 +114,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         var imageBase64 = this.canvas.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 1;
-          var xBlob = this.dataURItoBlob(imageBase64)
-          var file = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.imageDatas.push(file)
+          let xBlob = this.dataURItoBlob(imageBase64)
+          let imageFile = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
+          this.accountHandler.addCapturedImage(imageFile)
         }
 
         break
@@ -126,9 +128,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         var imageBase64 = this.canvas2.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 2;
-          var xBlob = this.dataURItoBlob(imageBase64)
-          var file = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.imageDatas.push(file)
+          let xBlob = this.dataURItoBlob(imageBase64)
+          let imageFile = new File([xBlob], "file1.jpeg", { type: "'image/jpeg'" })
+          this.accountHandler.addCapturedImage(imageFile)
         }
         break
       case 2:
@@ -139,9 +141,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         var imageBase64 = this.canvas3.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 3;
-          var xBlob = this.dataURItoBlob(imageBase64)
-          var file = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.imageDatas.push(file)
+          let xBlob = this.dataURItoBlob(imageBase64)
+          let imageFile = new File([xBlob], "file2.jpeg", { type: "'image/jpeg'" })
+          this.accountHandler.addCapturedImage(imageFile)
         }
 
         break
@@ -152,9 +154,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         var imageBase64 = this.canvas4.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 4;
-          var xBlob = this.dataURItoBlob(imageBase64)
-          var file = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.imageDatas.push(file)
+          let xBlob = this.dataURItoBlob(imageBase64)
+          let imageFile = new File([xBlob], "file3.jpeg", { type: "'image/jpeg'" })
+          this.accountHandler.addCapturedImage(imageFile)
         }
         break
       case 4:
@@ -165,9 +167,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         var imageBase64 = this.canvas5.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 5;
-          var xBlob = this.dataURItoBlob(imageBase64)
-          var file = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.imageDatas.push(file)
+          let xBlob = this.dataURItoBlob(imageBase64)
+          let imageFile = new File([xBlob], "file4.jpeg", { type: "'image/jpeg'" })
+          this.accountHandler.addCapturedImage(imageFile)
         }
         break
       case 5:
@@ -178,9 +180,9 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
         var imageBase64 = this.canvas6.nativeElement.toDataURL('image/jpeg')
         if (imageBase64) {
           this.nextNumberImage = 1;
-          var xBlob = this.dataURItoBlob(imageBase64)
-          var file = new File([xBlob], "file0.jpeg", { type: "'image/jpeg'" })
-          this.imageDatas.push(file)
+          let xBlob = this.dataURItoBlob(imageBase64)
+          let imageFile = new File([xBlob], "file5.jpeg", { type: "'image/jpeg'" })
+          this.accountHandler.addCapturedImage(imageFile)
         }
         break
     }
@@ -206,18 +208,6 @@ export class ImageRegisterComponent implements OnInit, OnDestroy {
     }
 
     return new Blob([ia], { type: mimeString });
-  }
-
-  register() {
-    var formData = new FormData()
-    let lengthOfImages = this.imageDatas.length
-    formData.append('number_image_files', lengthOfImages.toString())
-
-    for (let index = 0; index < lengthOfImages; index++) {
-      formData.append('files[]', this.imageDatas[index], 'file' + index + '.jpg')
-    }
-
-    this.serviceHandler.uploadFiles(formData)
   }
 
   setNextNumberImage(e: number) {

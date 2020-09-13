@@ -34,18 +34,15 @@
       </button>
    </div>
 
-   <button *ngIf="!isMobileBrowser" class="btn btn-primary btn-circle"
-      [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="capture()">
-      Chụp ảnh
-   </button>
-   <button *ngIf="!isMobileBrowser" class="btn btn-primary"
-      [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="register()">
-      Hoàn tất Đăng Ký
-   </button>
-
    <video [hidden]="isMobileBrowser" [ngClass]="isMobileBrowser==true?'display:none !important;':'vid'" muted
       playsinline #video autoplay>
    </video>
+
+
+   <button *ngIf="!isMobileBrowser" class="btn-circle bg-secondary text-white"
+      [ngClass]="isMobileBrowser==true?'display:none !important!;':''" (click)="capture()">
+      Chụp ảnh
+   </button>
 
    <div *ngIf="isMobileBrowser">
 
