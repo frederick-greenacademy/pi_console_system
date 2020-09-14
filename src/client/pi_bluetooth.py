@@ -194,8 +194,15 @@ class BLEClient:
                         pi_local_storage.add_list_data(data_will_update)
                         pi_local_storage.save_config()
 
+                        
+                        images_list = raw_data_json["images"]
+                        print("DS ảnh cần tải về: ", images_list)
+                        for item in images_list:
+                            print(item["user_name"])
+
+
             except Exception as f:
-                print("\n\nLỗi nhan du lieu Tai máy khách là:", f)
+                print("\n\n2.--Lỗi nhan du lieu Tai máy khách là:", f)
 
             while True:
 
