@@ -11,6 +11,7 @@ config = {
     'database': 'pi_iot'
 }
 
+
 def is_user_exits_with(user, passwrd, car_id):
 
     try:
@@ -65,7 +66,8 @@ def get_bluetooth_list(ble_cli_addr):
         conn = mariadb.connect(**config)
     except mariadb.Error as e:
         print(f"Loi ket noi den MariaDB: {e}")
-        return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
+        return []
+        # return json.dumps({"result": "false", "error": "không thể kết nối đến db"})
 
     cur = conn.cursor()
 
@@ -90,8 +92,38 @@ def get_bluetooth_list(ble_cli_addr):
         return need_updates
 
     except mariadb.Error as e:
-        print(f"Error SQL: {e}")
-        return json.dumps({"result": "false", "error": e})
+        print(f"Loi SQL như sau: {e}")
+        # return json.dumps({"result": "false", "error": e})
+        return []
+
+
+def get_images_list():
+
+    try:
+        conn = mariadb.connect(**config)
+    except mariadb.Error as e:
+        print(f"Loi ket noi den MariaDB: {e}")
+        return []
+
+    cur = conn.cursor()
+
+    need_updates = []
+    try:
+        cur.execute("SELECT user_name, file_name FROM Image")
+
+        ttt = cur.fetchall()
+        if len(ttt) <= 0:
+            conn.close()
+            return need_updates
+        images_arr = []
+        for x in ttt:
+            images_arr.append({"user_name": x[0], "file_name": x[1]})
+
+        return images_arr
+
+    except mariadb.Error as e:
+        print(f"Loi SQL: {e}")
+        return []
 
 
 def get_account_info(account_id):
@@ -118,9 +150,9 @@ def get_account_info(account_id):
         return json.dumps({
             "command": "show_qr_info",
             "result": "true", "data": {
-            "first_name": ttt[0][0],
-            "last_name": ttt[0][1]
-        }})
+                "first_name": ttt[0][0],
+                "last_name": ttt[0][1]
+            }})
 
     except mariadb.Error as e:
         print(f"Error SQL: {e}")

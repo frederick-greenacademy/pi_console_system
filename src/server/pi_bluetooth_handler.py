@@ -33,10 +33,16 @@ def recv_data_from(sock):
 def do_check_new_data(c, ble_cli_addr):
     print(time.time())
     print("Run: -----------------------")
-    data_needs_update = business_handler.get_bluetooth_list(
-        ble_cli_addr=ble_cli_addr)
+    # Lấy danh sách các thiết bị BLE
+    data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+    # Lấy danh sách các ảnh
+    images_needs_update = business_handler.get_images_list()
+
     message_info = {
-        "command": "update_data", "data": data_needs_update}
+        "command": "update_data", 
+        "data": data_needs_update,
+        "images": images_needs_update
+        }
     c.send(json.dumps(message_info).encode('utf-8'))
     print(time.time())
 
@@ -46,9 +52,17 @@ def do_check_new_data(c, ble_cli_addr):
 def threaded(c, ble_cli_addr):
 
     try:
+
+        # Lấy danh sách các thiết bị BLE
         data_needs_update = business_handler.get_bluetooth_list(ble_cli_addr=ble_cli_addr)
+        # Lấy danh sách các ảnh
+        images_needs_update = business_handler.get_images_list()
+
         message_info = {
-                "command": "update_data", "data": data_needs_update}
+            "command": "update_data", 
+            "data": data_needs_update,
+            "images": images_needs_update
+            }
         c.send(json.dumps(message_info).encode('utf-8'))
 
         while True:
