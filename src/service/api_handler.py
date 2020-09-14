@@ -4,12 +4,16 @@ import sys
 import mariadb
 import decimal
 from flask_cors import CORS
-from flask import Flask, request, flash
+from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 path = os.getcwd()
 # file Upload
-UPLOAD_FOLDER = os.path.join(path, 'uploads')
+UPLOAD_FOLDER = os.path.join(path, 'static/uploads')
+# Make directory if "uploads" folder not exists
+print(UPLOAD_FOLDER)
+if not os.path.isdir(UPLOAD_FOLDER):
+    os.mkdir(UPLOAD_FOLDER)
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -29,9 +33,7 @@ db_config = {
 
 
 app = Flask(__name__)
-# Make directory if "uploads" folder not exists
-if not os.path.isdir(UPLOAD_FOLDER):
-    os.mkdir(UPLOAD_FOLDER)
+
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -163,6 +165,10 @@ def check_sign_in():
     password = request.form['password']
     return is_user_exits_with(user, password)
 
+@app.route('/display/<filename>')
+def display_image(filename):
+	#print('display_image filename: ' + filename)
+	return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
