@@ -1,2 +1,3 @@
 src/service/uploads/*
+src/service/static/uploads/*
 src/client/config.json
