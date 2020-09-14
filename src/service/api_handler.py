@@ -11,7 +11,13 @@ path = os.getcwd()
 # file Upload
 UPLOAD_FOLDER = os.path.join(path, 'static/uploads')
 # Make directory if "uploads" folder not exists
-print(UPLOAD_FOLDER)
+#print(UPLOAD_FOLDER)
+
+parent_path = os.path.join(path, 'static')
+
+if not os.path.isdir(parent_path):
+    os.mkdir(parent_path)
+
 if not os.path.isdir(UPLOAD_FOLDER):
     os.mkdir(UPLOAD_FOLDER)
 
