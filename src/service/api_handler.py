@@ -89,10 +89,32 @@ def is_user_exits_with(user, password):
         print(f"Error SQL: {e}")
         return json.dumps({"result": False, "error": "Không thể truy vấn csdl"})
 
+def addImageToDB(user_name, file_name):
+    
+    try:
+        conn = mariadb.connect(**db_config)
+    except mariadb.Error as e:
+        print(f"\n\nLoi ket noi den MariaDB: {e}\n\n")
+
+    cur = conn.cursor()
+
+    try:
+        cur.execute(
+            "INSERT INTO Image(user_name, file_name) VALUES(?,?)", (user_name, file_name))
+    except mariadb.Error as e:
+        print(f"Lỗi thêm mới dữ liệu: {e}")
+        conn.close()
+
+    conn.commit()
+    print(f"ID vừa đc thêm vào là: {cur.lastrowid}")
+
+    conn.close()
+
+
 # Flask API
 @app.route("/")
 def main():
-    return "chào bạn đến với Hệ thống cơ sở dòng lệnh"
+    return "Pi IOT API - Xin chào"
 
 
 @app.route("/upload/files", methods=['POST'])
@@ -100,11 +122,10 @@ def upload_file():
     if request.method == 'POST':
         number_image_files = request.form['number_image_files']
         user_name = request.form['user_name']
-        print('So luong anh tai len: ', number_image_files)
 
         if 'files[]' not in request.files:
-            print('No file part')
-            # return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
+            print('Không tìm thấy tệp ảnh tải lên')
+            return json.dumps({"result": False, "error": "Không tìm thấy tệp tải lên"})
 
         files = request.files.getlist('files[]')
 
@@ -112,9 +133,10 @@ def upload_file():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 new_filename = str(user_name) + "_" + filename.lower()
-                    
-                file.save(os.path.join(
-                    app.config['UPLOAD_FOLDER'], new_filename))
+                # Lưu ảnh đến thư mục uploads   
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+                # lưu thêm mới ảnh
+                addImageToDB(user_name, filename.lower())
 
         print('Tải anh lên thành công')
         return json.dumps({"result": True, "message": "Tệp tải lên hoàn tất"})
