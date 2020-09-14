@@ -71,19 +71,52 @@
 #     main()
 
 
-import rx
-from rx import operators as ops
+# import rx
+# from rx import operators as ops
 
-source = rx.of("Alpha", "Beta", "Gamma", "Delta", "Epsilon")
+# source = rx.of("Alpha", "Beta", "Gamma", "Delta", "Epsilon")
 
-composed = source.pipe(
-    ops.map(lambda s: len(s)),
-    ops.filter(lambda i: i >= 5)
-)
-composed.subscribe(lambda value: print("Received {0}".format(value)))
+# composed = source.pipe(
+#     ops.map(lambda s: len(s)),
+#     ops.filter(lambda i: i >= 5)
+# )
+# composed.subscribe(lambda value: print("Received {0}".format(value)))
 
-obs1 = rx.from_([1, 2, 3, 4])
-obs2 = rx.from_([5, 6, 7, 8])
+# obs1 = rx.from_([1, 2, 3, 4])
+# obs2 = rx.from_([5, 6, 7, 8])
 
-res = rx.merge(obs1, obs2)
-res.subscribe(print)
+# res = rx.merge(obs1, obs2)
+# res.subscribe(print)
+
+import shutil
+import requests
+import os
+
+path = os.getcwd()
+
+def download_image(lable_user_name, file_name):
+    # tạo nhãn thư mục ứng với user_name
+    parent_path = os.path.join(path, lable_user_name)
+
+    if not os.path.isdir(parent_path):
+        os.mkdir(parent_path)
+
+    full_file_name = lable_user_name + "_" + file_name
+    url = 'http://192.168.0.101:8000/display/' + full_file_name
+    response = requests.get(url, stream=True)
+    new_path_file = parent_path + "/" + full_file_name
+    with open(new_path_file, 'wb') as out_file:
+        shutil.copyfileobj(response.raw, out_file)
+    del response
+
+
+
+images_list = [{'user_name': 'duat1236', 'file_name': 'file0.jpg'}, {'user_name': 'duat1236', 'file_name': 'file1.jpg'}, {'user_name': 'duat1236', 'file_name': 'file2.jpg'}, {'user_name': 'duat1236', 'file_name': 'file3.jpg'}, {'user_name': 'duat1236', 'file_name': 'file4.jpg'}, {'user_name': 'duat1236', 'file_name': 'file5.jpg'}]
+
+for item in images_list:
+    print(item['user_name'])
+
+    user_name = item['user_name']
+    file_name = item['file_name']
+    download_image(lable_user_name=user_name, file_name=file_name)
+
