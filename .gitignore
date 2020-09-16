@@ -1,4 +1,5 @@
 src/service/uploads/*
 src/service/static/uploads/*
 src/client/config.json
-src/duat1236/
+src/client/dataset/*
+src/client/images/*
