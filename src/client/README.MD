@@ -1,35 +1,3 @@
-### Terminal run by steps:
-
-
-#### Step 1
-```
-python3 extract_embeddings.py --dataset dataset \
-	--embeddings output/embeddings.pickle \
-	--detector face_detection_model \
-	--embedding-model openface_nn4.small2.v1.t7
-```	
-
-#### Step 2
-```
-python3 train_model.py --embeddings output/embeddings.pickle \
-  	--recognizer output/recognizer.pickle \
-  	--le output/le.pickle
-```	  
-
-#### Step 3 - Image and Video of recognition
-```
-python3 recognize.py --detector face_detection_model \
-  	--embedding-model openface_nn4.small2.v1.t7 \
-  	--recognizer output/recognizer.pickle \
-  	--le output/le.pickle \
-  	--image images/vu.jpg
-
-python3 recognize_video.py --detector face_detection_model \
-	--embedding-model openface_nn4.small2.v1.t7 \
-	--recognizer output/recognizer.pickle \
-	--le output/le.pickle
-```	
-
 ### Reference docs & actices:
 
 https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/

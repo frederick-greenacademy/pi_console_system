@@ -111,7 +111,7 @@ def download_image(lable_user_name, file_name):
 
 
 
-images_list = [{'user_name': 'duat1236', 'file_name': 'file0.jpg'}, {'user_name': 'duat1236', 'file_name': 'file1.jpg'}, {'user_name': 'duat1236', 'file_name': 'file2.jpg'}, {'user_name': 'duat1236', 'file_name': 'file3.jpg'}, {'user_name': 'duat1236', 'file_name': 'file4.jpg'}, {'user_name': 'duat1236', 'file_name': 'file5.jpg'}]
+images_list = [{'user_name': 'hungvt', 'file_name': 'file0.jpg'}, {'user_name': 'hungvt', 'file_name': 'file1.jpg'}, {'user_name': 'hungvt', 'file_name': 'file2.jpg'}, {'user_name': 'hungvt', 'file_name': 'file3.jpg'}, {'user_name': 'hungvt', 'file_name': 'file4.jpg'}, {'user_name': 'hungvt', 'file_name': 'file5.jpg'}]
 
 for item in images_list:
     print(item['user_name'])
