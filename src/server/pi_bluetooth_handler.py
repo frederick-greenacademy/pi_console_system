@@ -7,6 +7,7 @@ import business_handler
 import schedule
 import sched
 import time
+import struct
 
 backlog = 1
 
@@ -46,6 +47,10 @@ def do_check_new_data(c, ble_cli_addr):
     c.send(json.dumps(message_info).encode('utf-8'))
     print(time.time())
 
+def send_msg(sock, msg):
+    # Prefix each message with a 4-byte length (network byte order)
+    msg = struct.pack('>I', len(msg)) + msg
+    sock.send(msg)
 
 # Xử lý từng luồng cho từng Máy Khách
 # kết nối đến máy chủ
@@ -63,7 +68,9 @@ def threaded(c, ble_cli_addr):
             "data": data_needs_update,
             "images": images_needs_update
             }
-        c.send(json.dumps(message_info).encode('utf-8'))
+        # c.send(struct.pack(">I", len(message_info)))   
+        # c.send(json.dumps(message_info).encode('utf-8'))
+        send_msg(c, json.dumps(message_info).encode('utf-8'))
 
         while True:
             # now = time.time()
