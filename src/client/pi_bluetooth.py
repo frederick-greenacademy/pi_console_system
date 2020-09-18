@@ -16,6 +16,7 @@ from imutils.video import FPS
 import numpy as np
 import imutils
 import pickle
+import struct
 
 url_image_file = 'http://192.168.0.101:8000/display/'
 
@@ -299,7 +300,25 @@ def listen_user_enter_on_socket():
 
     return input("Chọn: ")
 
+def recv_msg(sock):
+    # Read message length and unpack it into an integer
+    raw_msglen = recvall(sock, 4)
+    if not raw_msglen:
+        return None
+    msglen = struct.unpack('>I', raw_msglen)[0]
+    # Read the message data
+    return recvall(sock, msglen)
 
+def recvall(sock, n):
+    # Helper function to recv n bytes or return None if EOF is hit
+    data = bytearray()
+    while len(data) < n:
+        packet = sock.recv(n - len(data))
+        if not packet:
+            return None
+        data.extend(packet)
+    return data
+    
 class BLEClient:
     def __init__(self, server_ble_addr, server_port):
         super().__init__()
@@ -319,9 +338,13 @@ class BLEClient:
             self.client.connect((self.server_ble_addr, self.server_port))
 
             try:
-                data = recv_data(self.client)
-                raw_data = data.decode('utf-8')
-                raw_data_json = json.loads(raw_data)
+                json_data = recv_msg(self.client)
+                print('My JSON at Local:', json_data)
+                raw_data_json = json.loads(json_data.decode("utf-8"))
+                
+                # data = recv_data(self.client)
+                # raw_data = data.decode('utf-8')
+                # raw_data_json = json.loads(raw_data)
 
                 print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
                 command = raw_data_json.get('command', None)
