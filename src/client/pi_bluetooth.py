@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import bluetooth
 import pi_local_storage
 import json
@@ -8,7 +9,35 @@ import datetime
 import time
 import cv2
 import readline
+import shutil
+import requests
+from imutils.video import VideoStream
+from imutils.video import FPS
+import numpy as np
+import imutils
+import pickle
 
+url_image_file = 'http://192.168.0.101:8000/display/'
+
+# lấy địa chỉ hiện hành
+path = os.getcwd()
+
+
+def download_image(lable_user_name, file_name):
+    # tạo nhãn thư mục ứng với user_name
+    file_path = str(Path(path).parents[0]) + "/client/dataset"
+    parent_path = os.path.join(file_path, lable_user_name)
+    # nếu thư mục dataset chưa có cần tạo mới
+    if not os.path.isdir(file_path):
+        os.mkdir(file_path)
+
+    full_file_name = lable_user_name + "_" + file_name
+    url = url_image_file + full_file_name
+    response = requests.get(url, stream=True)
+    new_path_file = parent_path + "/" + full_file_name
+    with open(new_path_file, 'wb') as out_file:
+        shutil.copyfileobj(response.raw, out_file)
+    del response
 
 def recv_data(client_socket):
     BUFF_SIZE = 4096  # 4 KiB
@@ -67,6 +96,115 @@ def manual_signin(client_socket):
             # os.system('clear')
             print("Thong tin ban nhap khong day du!")
 
+def face_recognization():
+    try:
+        file_path = str(Path(path).parents[0]) + "/client/"
+
+        protoPath = file_path + "/face_detection_model/" + "deploy.prototxt"
+        modelPath = file_path + "/face_detection_model/" + "res10_300x300_ssd_iter_140000.caffemodel"
+        detector = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
+        # load our serialized face embedding model from disk
+        print("[INFO] loading face recognizer...")
+        embedder = cv2.dnn.readNetFromTorch(file_path + "/openface_nn4.small2.v1.t7")
+        # load the actual face recognition model along with the label encoder
+        recognizer = pickle.loads(open(file_path + "/output/recognizer.pickle", "rb").read())
+        le = pickle.loads(open(file_path + "/output/le.pickle", "rb").read())
+
+        # initialize the video stream, then allow the camera sensor to warm up
+        print("[INFO] starting video stream...")
+        #vs = VideoStream(usePiCamera=True).start()
+        vs = VideoStream(src=0).start()
+        continue_run = True
+        
+        time.sleep(2.0)
+        # start the FPS throughput estimator
+        fps = FPS().start()
+        # loop over frames from the video file stream
+        while continue_run != False:
+            # grab the frame from the threaded video stream
+            frame = vs.read()
+            # resize the frame to have a width of 600 pixels (while
+            # maintaining the aspect ratio), and then grab the image
+            # dimensions
+            frame = imutils.resize(frame, width=600)
+            (h, w) = frame.shape[:2]
+            # construct a blob from the image
+            imageBlob = cv2.dnn.blobFromImage(
+                cv2.resize(frame, (300, 300)), 1.0, (300, 300),
+                (104.0, 177.0, 123.0), swapRB=False, crop=False)
+            # apply OpenCV's deep learning-based face detector to localize
+            # faces in the input image
+            detector.setInput(imageBlob)
+            detections = detector.forward()
+                # loop over the detections
+            for i in range(0, detections.shape[2]):
+                # extract the confidence (i.e., probability) associated with
+                # the prediction
+                confidence = detections[0, 0, i, 2]
+                # filter out weak detections
+                if confidence > 0.75: ##args["confidence"]
+                    # compute the (x, y)-coordinates of the bounding box for
+                    # the face
+                    box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                    (startX, startY, endX, endY) = box.astype("int")
+                    # extract the face ROI
+                    face = frame[startY:endY, startX:endX]
+                    (fH, fW) = face.shape[:2]
+                    # ensure the face width and height are sufficiently large
+                    if fW < 20 or fH < 20:
+                        continue
+                    
+                    # construct a blob for the face ROI, then pass the blob
+                    # through our face embedding model to obtain the 128-d
+                    # quantification of the face
+                    faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255,
+                        (96, 96), (0, 0, 0), swapRB=True, crop=False)
+                    embedder.setInput(faceBlob)
+                    vec = embedder.forward()
+                    # perform classification to recognize the face
+                    preds = recognizer.predict_proba(vec)[0]
+                    j = np.argmax(preds)
+                    proba = preds[j]
+                    name = le.classes_[j]
+                    # draw the bounding box of the face along with the
+                    # associated probability
+                    text = "{}: {:.2f}%".format(name, proba * 100)
+                    y = startY - 10 if startY - 10 > 10 else startY + 10
+                    cv2.rectangle(frame, (startX, startY), (endX, endY),
+                        (0, 0, 255), 2)
+                    cv2.putText(frame, text, (startX, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+                    time.sleep(3.0)		
+                    if name != 'unknown':
+                        found_user = name
+                        continue_run = False
+                        break
+            # update the FPS counter
+            fps.update()
+            # show the output frame
+            cv2.imshow("Frame", frame)
+            key = cv2.waitKey(1) & 0xFF
+            # if the `q` key was pressed, break from the loop
+            if key == ord("q"):
+                break        
+            
+        # stop the timer and display FPS information
+        fps.stop()
+        print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
+        print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+        # do a bit of cleanup
+        cv2.destroyAllWindows()
+        vs.stop()
+        cv2.waitKey(1)
+        
+        if found_user != None and found_user != 'unknown':
+            return found_user
+
+    except KeyboardInterrupt:
+        print("[X] cleaning up - L2")
+        cv2.destroyWindow('Barcode Scanner')
+        cv2.waitKey(1)
+        return None
 
 def scan_qrcode_from_cam():
     try:
@@ -196,9 +334,13 @@ class BLEClient:
 
                         
                         images_list = raw_data_json["images"]
-                        print("DS ảnh cần tải về: ", images_list)
+                        # print("DS ảnh cần tải về: ", images_list)
                         for item in images_list:
-                            print(item["user_name"])
+                            user_name = item["user_name"]
+                            file_name = item["file_name"]
+                            # print("\n\nDia chi hien hanh", path)
+                            download_image(lable_user_name=user_name, file_name=file_name)
+                            # print(item["user_name"])
 
 
             except Exception as f:
@@ -218,11 +360,13 @@ class BLEClient:
                     break
 
                 if choice == '1':
-                    print('')
                     manual_signin(self.client)
 
                 elif choice == '2':
-                    print('')
+                    user_recognization = face_recognization()
+                    print('\n\nĐã tìm thấy: ', user_recognization)
+                    if user_recognization != 'unknown'  and user_recognization != None:
+                        print('\n\nĐã tìm thấy: ', user_recognization)
 
                 elif choice == '3':
                     founds = scan_ble_nearby()
