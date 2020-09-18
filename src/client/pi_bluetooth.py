@@ -18,7 +18,7 @@ import imutils
 import pickle
 import struct
 
-url_image_file = 'http://192.168.0.101:8000/display/'
+url_image_file = 'http://192.168.1.8:8000/display/'
 
 # lấy địa chỉ hiện hành
 path = os.getcwd()
@@ -27,10 +27,13 @@ path = os.getcwd()
 def download_image(lable_user_name, file_name):
     # tạo nhãn thư mục ứng với user_name
     file_path = str(Path(path).parents[0]) + "/client/dataset"
-    parent_path = os.path.join(file_path, lable_user_name)
+    parent_path = file_path + "/" + lable_user_name
     # nếu thư mục dataset chưa có cần tạo mới
     if not os.path.isdir(file_path):
         os.mkdir(file_path)
+    # neu chua co thu muc voi Nhan: user_name tao moi    
+    if not os.path.isdir(parent_path):
+        os.mkdir(parent_path)    
 
     full_file_name = lable_user_name + "_" + file_name
     url = url_image_file + full_file_name
