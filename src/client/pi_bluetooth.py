@@ -119,7 +119,7 @@ def face_recognization():
         #vs = VideoStream(usePiCamera=True).start()
         vs = VideoStream(src=0).start()
         continue_run = True
-        
+        found_user = None
         time.sleep(2.0)
         # start the FPS throughput estimator
         fps = FPS().start()
