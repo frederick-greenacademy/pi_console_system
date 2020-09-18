@@ -17,6 +17,8 @@ import numpy as np
 import imutils
 import pickle
 import struct
+from extract_embeddings import run_extract
+from train_model import run_train_model
 
 url_image_file = 'http://192.168.1.8:8000/display/'
 
@@ -38,10 +40,14 @@ def download_image(lable_user_name, file_name):
     full_file_name = lable_user_name + "_" + file_name
     url = url_image_file + full_file_name
     response = requests.get(url, stream=True)
-    new_path_file = parent_path + "/" + full_file_name
-    with open(new_path_file, 'wb') as out_file:
-        shutil.copyfileobj(response.raw, out_file)
-    del response
+    
+    if response.status_code == 404:
+        del response
+    else:    
+        new_path_file = parent_path + "/" + full_file_name    
+        with open(new_path_file, 'wb') as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
 
 def recv_data(client_socket):
     BUFF_SIZE = 4096  # 4 KiB
@@ -342,14 +348,14 @@ class BLEClient:
 
             try:
                 json_data = recv_msg(self.client)
-                print('My JSON at Local:', json_data)
+                #print('My JSON at Local:', json_data)
                 raw_data_json = json.loads(json_data.decode("utf-8"))
                 
                 # data = recv_data(self.client)
                 # raw_data = data.decode('utf-8')
                 # raw_data_json = json.loads(raw_data)
 
-                print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
+                #print("\n\nDữ liệu đc gởi từ máy chủ:", raw_data_json)
                 command = raw_data_json.get('command', None)
                 if command != None:
                     if command == 'update_data':
@@ -365,8 +371,16 @@ class BLEClient:
                             user_name = item["user_name"]
                             file_name = item["file_name"]
                             # print("\n\nDia chi hien hanh", path)
+                            
                             download_image(lable_user_name=user_name, file_name=file_name)
+                            
                             # print(item["user_name"])
+
+                        # can goi: Giai nen thong tin hinh, can goi training lai
+                        run_extract()
+                        print('\n Ket thuc chay giai nen thong tin anh')   
+                        run_train_model()
+                        print('\n Ket thuc chay huan luyen') 
 
 
             except Exception as f:
@@ -393,6 +407,7 @@ class BLEClient:
                     print('\n\nĐã tìm thấy: ', user_recognization)
                     if user_recognization != 'unknown'  and user_recognization != None:
                         print('\n\nĐã tìm thấy: ', user_recognization)
+                        print('\n Can goi goi len server de kiem tra: user_name nay. Chu Hunglam dum chau nha')
 
                 elif choice == '3':
                     founds = scan_ble_nearby()
