@@ -288,10 +288,11 @@ def scan_ble_nearby():
 
     for addr, name in nearby_devices:
         try:
-            print(f"{addr.decode('utf-8')} - {name}")
-            founds.append(addr.decode("utf-8"))
-        except UnicodeEncodeError:
-            print(f"{addr} {name.encode('utf-8', 'replace')}")
+            print(f"{str(addr)} - {name}")
+            founds.append(str(addr))
+        except Exception as ex:
+            print('Loi doc thong tin BLE', ex)
+            #print(f"{addr} {name.encode('utf-8', 'replace')}")
     print("\n")
 
     return founds
