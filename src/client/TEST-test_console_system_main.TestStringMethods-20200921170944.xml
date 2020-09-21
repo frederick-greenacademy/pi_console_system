@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite errors="0" failures="2" file="test_console_system_main.py" name="test_console_system_main.TestStringMethods-20200921170944" skipped="0" tests="4" time="5.180" timestamp="2020-09-21T17:09:49">
+	<testcase classname="test_console_system_main.TestStringMethods" file="test_console_system_main.py" line="12" name="test_isupper" time="0.006" timestamp="2020-09-21T17:09:44"/>
+	<testcase classname="test_console_system_main.TestStringMethods" file="test_console_system_main.py" line="16" name="test_split" time="0.001" timestamp="2020-09-21T17:09:49"/>
+	<testcase classname="test_console_system_main.TestStringMethods" file="test_console_system_main.py" line="22" name="test_scan_BLE" time="5.171" timestamp="2020-09-21T17:09:49">
+		<failure message="0 != 2" type="AssertionError">
+<![CDATA[Traceback (most recent call last):
+  File "/Users/art3mis/future/python/pi_console_system/src/client/test_console_system_main.py", line 24, in test_scan_BLE
+    self.assertEqual(len(xx), 2)
+AssertionError: 0 != 2
+]]>		</failure>
+		<system-out>
+<![CDATA[Đang quét BLE xung quanh...
+-----Số thiết bị tìm được: 0-------
+]]>		</system-out>
+	</testcase>
+	<testcase classname="test_console_system_main.TestStringMethods" file="test_console_system_main.py" line="9" name="test_upper" time="0.001" timestamp="2020-09-21T17:09:49">
+		<failure message="'FOO' != 'foo'
+- FOO
++ foo
+" type="AssertionError">
+<![CDATA[Traceback (most recent call last):
+  File "/Users/art3mis/future/python/pi_console_system/src/client/test_console_system_main.py", line 10, in test_upper
+    self.assertEqual('foo'.upper(), 'foo')
+AssertionError: 'FOO' != 'foo'
+- FOO
++ foo
+
+]]>		</failure>
+	</testcase>
+</testsuite>
